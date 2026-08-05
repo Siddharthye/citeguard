@@ -41,15 +41,48 @@ export function scoreChunks(question: string, chunks: Chunk[]): ScoredChunk[] {
     .sort((a, b) => b.score - a.score);
 }
 
-export function toCitations(scored: ScoredChunk[], limit = 3): Citation[] {
-  return scored.slice(0, limit).map(({ chunk, score }) => ({
+/**
+ * Prefer diverse documents when several sources clear the threshold,
+ * so multi-policy conflicts surface in the UI instead of one handbook dominating.
+ */
+export function toCitations(
+  scored: ScoredChunk[],
+  limit = 3,
+  minScore = REFUSAL_THRESHOLD,
+): Citation[] {
+  const eligible = scored.filter((item) => item.score >= minScore);
+  const selected: ScoredChunk[] = [];
+  const seenDocs = new Set<string>();
+
+  for (const item of eligible) {
+    if (seenDocs.has(item.chunk.documentId)) continue;
+    selected.push(item);
+    seenDocs.add(item.chunk.documentId);
+    if (selected.length >= limit) break;
+  }
+
+  for (const item of eligible) {
+    if (selected.length >= limit) break;
+    if (selected.some((s) => s.chunk.id === item.chunk.id)) continue;
+    selected.push(item);
+  }
+
+  if (selected.length === 0) {
+    return scored.slice(0, limit).map(scoredToCitation);
+  }
+
+  return selected.map(scoredToCitation);
+}
+
+function scoredToCitation({ chunk, score }: ScoredChunk): Citation {
+  return {
     documentId: chunk.documentId,
     documentName: chunk.documentName,
     chunkId: chunk.id,
     chunkIndex: chunk.index,
     quote: chunk.text.length > 320 ? `${chunk.text.slice(0, 317)}...` : chunk.text,
     score: Number(score.toFixed(4)),
-  }));
+  };
 }
 
 /** Minimum best-chunk score required to answer (else refuse). */

@@ -11,19 +11,17 @@
 - [x] Custom citation-auditor agent + chunk-and-index skill
 - [x] Unit tests + Playwright e2e + GitHub Actions CI
 
-## Done (v0.2 win path)
+## Done (v0.3 delivery polish)
 
-- [x] Runtime Citation Auditor (`faithfulness.ts`) + LLM veto
-- [x] Citation → source jump in UI
-- [x] PDF upload via `unpdf`
-- [x] DECISIONS.md + DAY2_PLAYBOOK.md + panel deck outline
-- [x] Adversarial + faithfulness unit tests
-- [x] Multi-source flag on answers
+- [x] Docker + compose one-command
+- [x] Spec Kit artifact trail (`.specify/`)
+- [x] Multi-source conflict banner
+- [x] Husky pre-commit (lint + unit)
 
 ## Next (optional / Day 2 prep)
 
 - [ ] Deploy public URL (Vercel)
 - [ ] Narrated 3-min demo video
 - [ ] Stronger DB (SQLite / Postgres)
-- [ ] Spec Kit artifact trail (if judges expect it)
+- [ ] Embeddings behind same score API
 - [ ] Auth / workspace isolation
