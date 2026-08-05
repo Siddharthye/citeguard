@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { answerQuestion } from "@/lib/answer";
-import { addAudit, getChunks } from "@/lib/store";
+import { addAudit, getChunks, listDocuments } from "@/lib/store";
 
 export const runtime = "nodejs";
 
@@ -20,7 +20,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await answerQuestion(parsed.data.question, getChunks());
+  const result = await answerQuestion(
+    parsed.data.question,
+    getChunks(),
+    listDocuments(),
+  );
 
   addAudit({
     question: parsed.data.question,

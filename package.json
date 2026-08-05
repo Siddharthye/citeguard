@@ -1,6 +1,6 @@
 {
   "name": "citeguard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,6 +15,7 @@
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "unpdf": "^1.8.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

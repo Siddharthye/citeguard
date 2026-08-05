@@ -32,10 +32,18 @@ Expenses of $75 or more require written manager approval before purchase.`;
     const scored = scoreChunks("How many paid leave days?", chunks);
     assert.ok(scored[0].score > REFUSAL_THRESHOLD);
 
-    const result = await answerQuestion("How many paid leave days?", chunks);
+    const docs = [
+      { id: "d1", name: "policy.md", content: policy, uploadedAt: "t" },
+    ];
+    const result = await answerQuestion(
+      "How many paid leave days?",
+      chunks,
+      docs,
+    );
     assert.equal(result.refused, false);
     assert.ok(result.citations.length > 0);
     assert.match(result.answer.toLowerCase(), /18/);
+    assert.equal(result.faithful, true);
   });
 
   it("refuses out-of-scope questions", async () => {
