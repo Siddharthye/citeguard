@@ -16,6 +16,7 @@
 /test-results/
 /blob-report/
 /playwright/.cache/
+/demos/video-raw/
 
 # next.js
 /.next/
