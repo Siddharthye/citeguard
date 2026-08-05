@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.data
+demos/video-raw
+playwright-report
+test-results
+coverage
+.env
+.env.*
+!.env.example

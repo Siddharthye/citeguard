@@ -62,6 +62,36 @@ test.describe("CiteGuard", () => {
     expect(text.toLowerCase()).toContain("leave");
   });
 
+  test("shows conflict banner when multiple sources match", async ({ page }) => {
+    await page.goto("/");
+
+    await page.getByTestId("upload-name").fill("leave-a.md");
+    await page
+      .getByTestId("upload-content")
+      .fill("Team Alpha handbook: paid leave is 18 days per year.");
+    await page.getByTestId("upload-button").click();
+    await expect(page.getByTestId("document-list")).toContainText("leave-a.md");
+
+    await page.getByTestId("upload-name").fill("leave-b.md");
+    await page
+      .getByTestId("upload-content")
+      .fill("Team Beta handbook: paid leave is 22 days per year.");
+    await page.getByTestId("upload-button").click();
+    await expect(page.getByTestId("document-list")).toContainText("leave-b.md");
+
+    await page
+      .getByTestId("question-input")
+      .fill("How many paid leave days are in the handbook?");
+    await page.getByTestId("ask-button").click();
+
+    await expect(page.getByTestId("answer-text")).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByTestId("conflict-banner")).toContainText(
+      /Multiple sources disagree/i,
+    );
+  });
+
   test("uploads a document and can ask about it", async ({ page }) => {
     await page.goto("/");
 

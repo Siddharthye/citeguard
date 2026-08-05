@@ -242,6 +242,26 @@ export function CiteGuardApp({
               >
                 {result.answer}
               </p>
+              {result.multiSource && !result.refused && (
+                <div
+                  data-testid="conflict-banner"
+                  className="border border-[var(--warn)] bg-[#fff7ed] px-3 py-2 text-sm text-[var(--ink)]"
+                  role="status"
+                >
+                  <p className="font-semibold text-[var(--warn)]">
+                    Multiple sources disagree — see both
+                  </p>
+                  <p className="mt-1 text-[var(--ink-muted)]">
+                    Citations span{" "}
+                    {[
+                      ...new Set(
+                        result.citations.map((citation) => citation.documentName),
+                      ),
+                    ].join(" · ")}
+                    . Compare quotes before treating any single figure as policy.
+                  </p>
+                </div>
+              )}
               <p
                 className="text-xs uppercase tracking-wider text-[var(--ink-faint)]"
                 data-testid="answer-meta"

@@ -14,6 +14,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 CiteGuard answers policy questions **only** from uploaded source documents and always attaches citations — or refuses.
 
+Spec Kit constitution (canonical ADLC copy): `.specify/memory/constitution.md`
+
 ## Non-negotiables for agents
 
 1. Do not invent policy content. Prefer refusal over speculation.
@@ -23,6 +25,7 @@ CiteGuard answers policy questions **only** from uploaded source documents and a
 5. Before claiming done: `npm run lint`, `npm run test:unit`, `npm run build`.
 6. For answer-path changes, consult `agents/citation-auditor.md`.
 7. For ingestion/chunking changes, follow `skills/chunk-and-index/SKILL.md`.
+8. Follow the Spec Kit trail under `.specify/` when changing scope.
 
 ## Stack boundaries
 
