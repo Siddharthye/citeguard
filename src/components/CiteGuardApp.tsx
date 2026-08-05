@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 type DocumentRecord = {
   id: string;
@@ -31,9 +31,17 @@ type AuditEntry = {
   createdAt: string;
 };
 
-export function CiteGuardApp() {
-  const [documents, setDocuments] = useState<DocumentRecord[]>([]);
-  const [audit, setAudit] = useState<AuditEntry[]>([]);
+type CiteGuardAppProps = {
+  initialDocuments: DocumentRecord[];
+  initialAudit: AuditEntry[];
+};
+
+export function CiteGuardApp({
+  initialDocuments,
+  initialAudit,
+}: CiteGuardAppProps) {
+  const [documents, setDocuments] = useState(initialDocuments);
+  const [audit, setAudit] = useState(initialAudit);
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<AskResult | null>(null);
   const [busy, setBusy] = useState(false);
@@ -51,10 +59,6 @@ export function CiteGuardApp() {
     setDocuments(docsJson.documents ?? []);
     setAudit(auditJson.entries ?? []);
   }, []);
-
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
 
   async function onAsk(event: React.FormEvent) {
     event.preventDefault();
