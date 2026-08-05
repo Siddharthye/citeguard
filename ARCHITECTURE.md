@@ -46,20 +46,23 @@ Storage uses an in-process singleton (`src/lib/store.ts`) backed by best-effort 
 4. Otherwise take top citations and:
    - **Extractive mode (default):** compose the answer from cited quotes (CI-safe, no API key).
    - **LLM mode (optional):** if `LLM_API_KEY` + `LLM_BASE_URL` are set, ask the model to answer *only* from numbered evidence passages.
+5. **Citation Auditor (runtime):** `faithfulness.ts` verifies quotes ⊆ documents and rejects uncited LLM numbers (falls back to extractive).
 
 ## Extensibility (Day 2 ready)
 
-Designed so surprise requirements can land as additive modules:
+See `DAY2_PLAYBOOK.md` and `DECISIONS.md`. Designed so surprise requirements land as additive modules:
 
-- New document types → parsers feeding the same `addDocument` / chunk API
-- Stricter citation rules → adjust threshold / citation auditor agent
-- Export / compliance report → read from audit log
-- Auth / multi-tenant → wrap store behind an interface (already isolated in `store.ts`)
+- New document types → `extract.ts` parsers feeding `addDocument`
+- Stricter citation rules → `faithfulness.ts` / refusal threshold
+- Export / compliance report → audit log + CSV (extendable)
+- Auth / multi-tenant → wrap store behind an interface (isolated in `store.ts`)
 
 ## Key modules
 
 - `src/lib/chunk.ts` — tokenization + chunking
 - `src/lib/retrieve.ts` — scoring + refusal threshold
-- `src/lib/answer.ts` — extractive / LLM answering
+- `src/lib/faithfulness.ts` — executable Citation Auditor
+- `src/lib/extract.ts` — txt/md/pdf text extraction
+- `src/lib/answer.ts` — extractive / LLM answering + auditor veto
 - `src/lib/store.ts` — documents, chunks, audit
-- `src/components/CiteGuardApp.tsx` — primary UI
+- `src/components/CiteGuardApp.tsx` — primary UI (citation → source jump)

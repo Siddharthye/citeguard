@@ -9,6 +9,7 @@ type DocumentRecord = {
 };
 
 type Citation = {
+  documentId: string;
   documentName: string;
   chunkIndex: number;
   quote: string;
@@ -20,6 +21,9 @@ type AskResult = {
   refused: boolean;
   citations: Citation[];
   mode: "extractive" | "llm";
+  faithful: boolean;
+  auditIssues: string[];
+  multiSource: boolean;
 };
 
 type AuditEntry = {
@@ -31,10 +35,28 @@ type AuditEntry = {
   createdAt: string;
 };
 
+type SourceView = {
+  id: string;
+  name: string;
+  content: string;
+  highlight: string;
+};
+
 type CiteGuardAppProps = {
   initialDocuments: DocumentRecord[];
   initialAudit: AuditEntry[];
 };
+
+function highlightContent(content: string, quote: string): string {
+  const core = quote.replace(/\.\.\.$/, "").trim();
+  if (!core) return content;
+  const idx = content.toLowerCase().indexOf(core.toLowerCase());
+  if (idx < 0) return content;
+  const before = content.slice(0, idx);
+  const match = content.slice(idx, idx + core.length);
+  const after = content.slice(idx + core.length);
+  return `${before}⟦${match}⟧${after}`;
+}
 
 export function CiteGuardApp({
   initialDocuments,
@@ -48,6 +70,7 @@ export function CiteGuardApp({
   const [error, setError] = useState<string | null>(null);
   const [uploadName, setUploadName] = useState("");
   const [uploadContent, setUploadContent] = useState("");
+  const [sourceView, setSourceView] = useState<SourceView | null>(null);
 
   const refresh = useCallback(async () => {
     const [docsRes, auditRes] = await Promise.all([
@@ -59,6 +82,27 @@ export function CiteGuardApp({
     setDocuments(docsJson.documents ?? []);
     setAudit(auditJson.entries ?? []);
   }, []);
+
+  async function openCitation(citation: Citation) {
+    const response = await fetch(`/api/documents?id=${citation.documentId}`);
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error ?? "Could not load source");
+      return;
+    }
+    setSourceView({
+      id: data.document.id,
+      name: data.document.name,
+      content: data.document.content,
+      highlight: citation.quote,
+    });
+    requestAnimationFrame(() => {
+      document.getElementById("source-panel")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
 
   async function onAsk(event: React.FormEvent) {
     event.preventDefault();
@@ -112,8 +156,34 @@ export function CiteGuardApp({
 
   async function onFile(file: File | null) {
     if (!file) return;
-    const text = await file.text();
     setUploadName(file.name);
+    setError(null);
+
+    if (file.name.toLowerCase().endsWith(".pdf")) {
+      setBusy(true);
+      try {
+        const form = new FormData();
+        form.set("file", file);
+        form.set("name", file.name);
+        const response = await fetch("/api/documents", {
+          method: "POST",
+          body: form,
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error ?? "PDF upload failed");
+        }
+        setUploadContent("");
+        await refresh();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "PDF upload failed");
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+
+    const text = await file.text();
     setUploadContent(text);
   }
 
@@ -172,28 +242,47 @@ export function CiteGuardApp({
               >
                 {result.answer}
               </p>
-              <p className="text-xs uppercase tracking-wider text-[var(--ink-faint)]">
+              <p
+                className="text-xs uppercase tracking-wider text-[var(--ink-faint)]"
+                data-testid="answer-meta"
+              >
                 Mode: {result.mode}
                 {result.refused ? " · refused" : ""}
+                {result.faithful ? " · auditor: pass" : " · auditor: fail"}
+                {result.multiSource ? " · multi-source" : ""}
               </p>
+              {result.auditIssues.length > 0 && (
+                <ul
+                  className="text-xs text-[var(--warn)]"
+                  data-testid="audit-issues"
+                >
+                  {result.auditIssues.map((issue) => (
+                    <li key={issue}>{issue}</li>
+                  ))}
+                </ul>
+              )}
               {result.citations.length > 0 && (
                 <ul className="space-y-3" data-testid="citations">
                   {result.citations.map((citation) => (
-                    <li
-                      key={`${citation.documentName}-${citation.chunkIndex}-${citation.score}`}
-                      className="bg-white/70 p-3 text-sm leading-relaxed text-[var(--ink-muted)]"
-                    >
-                      <span className="font-semibold text-[var(--ink)]">
-                        {citation.documentName}
-                      </span>
-                      <span className="text-[var(--ink-faint)]">
-                        {" "}
-                        · chunk {citation.chunkIndex + 1} · score{" "}
-                        {citation.score.toFixed(2)}
-                      </span>
-                      <p className="mt-2 border-l-2 border-[var(--line)] pl-3 italic">
-                        “{citation.quote}”
-                      </p>
+                    <li key={`${citation.documentId}-${citation.chunkIndex}`}>
+                      <button
+                        type="button"
+                        data-testid="citation-button"
+                        onClick={() => void openCitation(citation)}
+                        className="w-full bg-white/70 p-3 text-left text-sm leading-relaxed text-[var(--ink-muted)] transition hover:bg-white"
+                      >
+                        <span className="font-semibold text-[var(--ink)]">
+                          {citation.documentName}
+                        </span>
+                        <span className="text-[var(--ink-faint)]">
+                          {" "}
+                          · chunk {citation.chunkIndex + 1} · score{" "}
+                          {citation.score.toFixed(2)} · view source
+                        </span>
+                        <p className="mt-2 border-l-2 border-[var(--line)] pl-3 italic">
+                          “{citation.quote}”
+                        </p>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -208,6 +297,36 @@ export function CiteGuardApp({
         </div>
       </section>
 
+      {sourceView && (
+        <section
+          id="source-panel"
+          data-testid="source-panel"
+          className="space-y-3 border border-[var(--line)] bg-white/70 p-5"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-display text-2xl text-[var(--ink)]">
+              Source: {sourceView.name}
+            </h2>
+            <button
+              type="button"
+              className="text-sm text-[var(--ink-muted)] underline"
+              onClick={() => setSourceView(null)}
+            >
+              Close
+            </button>
+          </div>
+          <p className="text-sm text-[var(--ink-muted)]">
+            Cited span marked with ⟦ … ⟧
+          </p>
+          <pre
+            data-testid="source-content"
+            className="max-h-80 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-[var(--ink)]"
+          >
+            {highlightContent(sourceView.content, sourceView.highlight)}
+          </pre>
+        </section>
+      )}
+
       {error && (
         <p className="text-sm text-[var(--warn)]" role="alert">
           {error}
@@ -218,14 +337,15 @@ export function CiteGuardApp({
         <form onSubmit={onUpload} className="space-y-4" data-testid="upload-form">
           <h2 className="font-display text-3xl text-[var(--ink)]">Sources</h2>
           <p className="text-sm text-[var(--ink-muted)]">
-            Paste policy text or upload a{" "}
+            Paste policy text or upload{" "}
             <code className="text-[var(--teal-deep)]">.txt</code> /{" "}
-            <code className="text-[var(--teal-deep)]">.md</code> file.
+            <code className="text-[var(--teal-deep)]">.md</code> /{" "}
+            <code className="text-[var(--teal-deep)]">.pdf</code>.
           </p>
           <input
             data-testid="file-input"
             type="file"
-            accept=".txt,.md,text/plain,text/markdown"
+            accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf"
             onChange={(event) => void onFile(event.target.files?.[0] ?? null)}
             className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:border-0 file:bg-[var(--ink)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--paper)]"
           />
@@ -241,7 +361,7 @@ export function CiteGuardApp({
             value={uploadContent}
             onChange={(event) => setUploadContent(event.target.value)}
             rows={6}
-            placeholder="Paste policy text…"
+            placeholder="Paste policy text (not needed for PDF — upload file directly)…"
             className="w-full border border-[var(--line)] bg-white/80 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--teal)]"
             required
           />
@@ -251,7 +371,7 @@ export function CiteGuardApp({
             disabled={busy}
             className="border border-[var(--ink)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] disabled:opacity-50"
           >
-            Add document
+            Add pasted document
           </button>
 
           <ul className="space-y-2 pt-2" data-testid="document-list">

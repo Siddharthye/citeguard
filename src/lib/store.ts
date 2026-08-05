@@ -152,6 +152,11 @@ export function listDocuments(): DocumentRecord[] {
   );
 }
 
+export function getDocument(id: string): DocumentRecord | undefined {
+  ensureSampleDocument();
+  return getStore().documents.get(id);
+}
+
 export function deleteDocument(id: string): boolean {
   const store = getStore();
   const existed = store.documents.delete(id);

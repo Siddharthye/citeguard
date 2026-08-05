@@ -23,7 +23,12 @@ test.describe("CiteGuard", () => {
       timeout: 15_000,
     });
     await expect(page.getByTestId("citations")).toBeVisible();
+    await expect(page.getByTestId("answer-meta")).toContainText(/auditor: pass/i);
     await expect(page.getByTestId("audit-list")).toContainText(/leave/i);
+
+    await page.getByTestId("citation-button").first().click();
+    await expect(page.getByTestId("source-panel")).toBeVisible();
+    await expect(page.getByTestId("source-content")).toContainText(/18/i);
   });
 
   test("refuses an out-of-scope question", async ({ page }) => {

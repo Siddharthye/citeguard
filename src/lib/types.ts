@@ -27,6 +27,11 @@ export type AskResult = {
   refused: boolean;
   citations: Citation[];
   mode: "extractive" | "llm";
+  /** Runtime Citation Auditor result */
+  faithful: boolean;
+  auditIssues: string[];
+  /** True when citations span more than one document */
+  multiSource: boolean;
 };
 
 export type AuditEntry = {

@@ -6,39 +6,47 @@ Teams drown in policy PDFs and handbooks. People ask LLMs anyway, and get confid
 
 ## Solution
 
-CiteGuard lets a user upload policy text, ask a question, and receive either:
+CiteGuard lets a user upload policy text (txt/md/pdf), ask a question, and receive either:
 
 - a grounded answer with quoted source passages, or
 - a clear refusal when the documents do not support an answer.
 
-Every interaction is audited.
+Every interaction is audited. A **runtime Citation Auditor** verifies quotes against source documents.
 
 ## Users
 
 - Compliance / HR operators answering employee questions
 - Hackathon judges verifying citation quality and refusal behavior
 
-## User stories
+## User stories + acceptance criteria
 
-1. **As a user**, I can open the app and immediately ask about the seeded sample policy so the demo works without setup.
-2. **As a user**, I can upload `.txt` / `.md` policy content and see it listed under Sources.
-3. **As a user**, when I ask an in-scope question, I see an answer and at least one citation quote.
-4. **As a user**, when I ask something absent from the docs, I see “I don’t know…” and no citations.
-5. **As a reviewer**, I can inspect the audit log for question, refusal flag, and citation count.
-6. **As a developer**, I can run unit + Playwright tests in CI without providing an LLM key.
+| ID | Story | Acceptance |
+| --- | --- | --- |
+| US-1 | Open app and ask about seeded policy | Leave question yields answer containing `18` + ≥1 citation |
+| US-2 | Upload txt/md policy | Document appears in Sources list |
+| US-3 | Upload PDF policy | Multipart upload extracts text; doc listed |
+| US-4 | Ask out-of-scope question | Answer matches “I don’t know…”; `citations: []` |
+| US-5 | Click a citation | Source panel opens; cited span visible |
+| US-6 | Review audit trail | Audit list + CSV export include recent questions |
+| US-7 | Trust answers | `faithful: true` on extractive answers; unit tests cover auditor |
+| US-8 | CI without LLM keys | GitHub Actions runs lint, unit, build, Playwright green |
 
-## Acceptance criteria
+## Given / When / Then (examples)
 
-- `/api/health` returns `{ status: "ok" }`.
-- Seeded document is present after first documents fetch.
-- In-scope leave question mentions `18` and shows citations in the UI.
-- Out-of-scope question refuses.
-- Upload + ask path works for a new document.
-- GitHub Actions workflow runs lint, unit tests, build, and Playwright.
+1. **Given** the seeded Acme policy, **When** I ask about paid leave days, **Then** I see `18` and can open the source quote.
+2. **Given** any loaded docs, **When** I ask about cafeteria pizza, **Then** the system refuses with no citations.
+3. **Given** an LLM answer inventing `99` days, **When** the auditor runs, **Then** the system rejects it and falls back to extractive quotes.
 
-## Out of scope (v0.1)
+## Out of scope (v0.2)
 
 - Multi-user auth
-- Persistent database
-- Native PDF binary parsing (paste/extract text first)
+- Managed database
 - Streaming chat UI
+- Full semantic embeddings (see ADR-001)
+
+## Related docs
+
+- `ARCHITECTURE.md`
+- `DECISIONS.md`
+- `DAY2_PLAYBOOK.md`
+- `AGENTS_AND_SKILLS.md`

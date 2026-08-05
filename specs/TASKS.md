@@ -11,14 +11,19 @@
 - [x] Custom citation-auditor agent + chunk-and-index skill
 - [x] Unit tests + Playwright e2e + GitHub Actions CI
 
-## Done (follow-ups)
+## Done (v0.2 win path)
 
-- [x] Persist store to `.data/store.json`
-- [x] Export audit report as CSV
+- [x] Runtime Citation Auditor (`faithfulness.ts`) + LLM veto
+- [x] Citation → source jump in UI
+- [x] PDF upload via `unpdf`
+- [x] DECISIONS.md + DAY2_PLAYBOOK.md + panel deck outline
+- [x] Adversarial + faithfulness unit tests
+- [x] Multi-source flag on answers
 
 ## Next (optional / Day 2 prep)
 
+- [ ] Deploy public URL (Vercel)
+- [ ] Narrated 3-min demo video
 - [ ] Stronger DB (SQLite / Postgres)
-- [ ] PDF text extraction pipeline
-- [ ] Stricter multi-claim citation checks
+- [ ] Spec Kit artifact trail (if judges expect it)
 - [ ] Auth / workspace isolation
