@@ -4,6 +4,8 @@
 
 Ask questions against uploaded policies. Get answers only when the documents support them — with the exact passage cited — or a clear refusal. A **runtime Citation Auditor** verifies every quote.
 
+**Live demo:** https://citeguard-two.vercel.app
+
 ## Clone → run in ~60 seconds
 
 ### Option A — npm (fastest)
