@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CiteGuard
 
-## Getting Started
+**Deploy or Die · Track C — Knowledge & Compliance Agents**
 
-First, run the development server:
+Ask questions against uploaded policies. Get answers only when the documents support them — with the exact passage cited — or a clear refusal.
+
+## Quick start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). A sample Acme workplace policy is seeded automatically.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Optional LLM refinement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` → `.env.local` and set OpenAI-compatible credentials (NVIDIA Build, Gemini OpenAI endpoint, OpenRouter, etc.). Without keys, CiteGuard stays in deterministic **extractive** mode (required for CI).
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Local development |
+| `npm run build` / `npm start` | Production server |
+| `npm run lint` | ESLint |
+| `npm run test:unit` | Retrieval / refusal unit tests |
+| `npm run test:e2e` | Playwright (starts production server) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Hackathon gate artifacts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `ARCHITECTURE.md` — stack, data model, design
+- `AGENTS.md` — agent constitution / rules
+- `AGENTS_AND_SKILLS.md` — custom agent + skill index
+- `agents/citation-auditor.md` — custom agent
+- `skills/chunk-and-index/SKILL.md` — custom skill
+- `specs/PRD.md` — specification / user stories
+- `.github/workflows/ci.yml` — CI pipeline
 
-## Deploy on Vercel
+## Demo tips
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Ask: *How many days of paid annual leave do employees receive?* → expect **18** + citations.
+2. Ask something unrelated → expect **I don't know**.
+3. Upload a short policy snippet and ask about it.
+4. Show the audit log.
