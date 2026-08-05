@@ -20,7 +20,10 @@ const globalForStore = globalThis as typeof globalThis & {
   __citeguardStore?: StoreShape;
 };
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR =
+  process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? path.join("/tmp", "citeguard-data")
+    : path.join(process.cwd(), ".data");
 const DATA_FILE = path.join(DATA_DIR, "store.json");
 
 function createStore(): StoreShape {
