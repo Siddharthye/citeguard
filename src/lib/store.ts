@@ -88,6 +88,8 @@ export function resetStore(): void {
   persist(globalForStore.__citeguardStore);
 }
 
+const SAMPLE_DOC_ID = "a1111111-1111-4111-8111-111111111111";
+
 const SAMPLE_POLICY = `# Acme Workplace Policy Handbook
 
 ## Leave Policy
@@ -113,24 +115,29 @@ Managers escalate unresolved incidents to the compliance officer within 24 hours
 
 export function ensureSampleDocument(): DocumentRecord {
   const store = getStore();
-  if (store.seeded && store.documents.size > 0) {
-    return [...store.documents.values()][0];
+  const existingById = store.documents.get(SAMPLE_DOC_ID);
+  if (existingById) {
+    store.seeded = true;
+    return existingById;
   }
 
-  const existing = [...store.documents.values()].find(
+  const existingByName = [...store.documents.values()].find(
     (doc) => doc.name === "acme-workplace-policy.md",
   );
-  if (existing) {
+  if (existingByName) {
     store.seeded = true;
-    return existing;
+    return existingByName;
   }
 
-  return addDocument("acme-workplace-policy.md", SAMPLE_POLICY);
+  return addDocument("acme-workplace-policy.md", SAMPLE_POLICY, SAMPLE_DOC_ID);
 }
 
-export function addDocument(name: string, content: string): DocumentRecord {
+export function addDocument(
+  name: string,
+  content: string,
+  id: string = randomUUID(),
+): DocumentRecord {
   const store = getStore();
-  const id = randomUUID();
   const document: DocumentRecord = {
     id,
     name,

@@ -9,6 +9,8 @@ import {
 } from "@/lib/store";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const uploadSchema = z.object({
   name: z.string().min(1).max(200),

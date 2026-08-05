@@ -74,9 +74,12 @@ export function CiteGuardApp({
 
   const refresh = useCallback(async () => {
     const [docsRes, auditRes] = await Promise.all([
-      fetch("/api/documents"),
-      fetch("/api/audit"),
+      fetch("/api/documents", { cache: "no-store" }),
+      fetch("/api/audit", { cache: "no-store" }),
     ]);
+    if (!docsRes.ok || !auditRes.ok) {
+      throw new Error("Could not refresh documents or audit log.");
+    }
     const docsJson = await docsRes.json();
     const auditJson = await auditRes.json();
     setDocuments(docsJson.documents ?? []);
@@ -84,16 +87,37 @@ export function CiteGuardApp({
   }, []);
 
   async function openCitation(citation: Citation) {
-    const response = await fetch(`/api/documents?id=${citation.documentId}`);
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.error ?? "Could not load source");
-      return;
+    // Prefer live document body; fall back to the citation quote if the
+    // serverless instance does not share uploaded-doc memory.
+    try {
+      const response = await fetch(
+        `/api/documents?id=${encodeURIComponent(citation.documentId)}`,
+        { cache: "no-store" },
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSourceView({
+          id: data.document.id,
+          name: data.document.name,
+          content: data.document.content,
+          highlight: citation.quote,
+        });
+        requestAnimationFrame(() => {
+          document.getElementById("source-panel")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+        return;
+      }
+    } catch {
+      // fall through to quote-only view
     }
+
     setSourceView({
-      id: data.document.id,
-      name: data.document.name,
-      content: data.document.content,
+      id: citation.documentId,
+      name: citation.documentName,
+      content: citation.quote,
       highlight: citation.quote,
     });
     requestAnimationFrame(() => {
@@ -113,15 +137,29 @@ export function CiteGuardApp({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question }),
+        cache: "no-store",
       });
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(data.error ?? "Ask failed");
+        throw new Error(
+          (data as { error?: string }).error ??
+            `Ask failed (HTTP ${response.status})`,
+        );
       }
-      setResult(data);
-      await refresh();
+      setResult(data as AskResult);
+      try {
+        await refresh();
+      } catch {
+        // Answer already shown; list refresh is best-effort on serverless.
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ask failed");
+      const message =
+        err instanceof Error ? err.message : "Ask failed";
+      setError(
+        message === "Failed to fetch" || message.includes("NetworkError")
+          ? "Network error reaching the API. Retry once — cold starts on free hosting can drop the first request."
+          : message,
+      );
     } finally {
       setBusy(false);
     }

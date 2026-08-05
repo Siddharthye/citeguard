@@ -1,6 +1,8 @@
 import { CiteGuardApp } from "@/components/CiteGuardApp";
 import { listAudit, listDocuments } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   const documents = listDocuments().map(({ id, name, uploadedAt }) => ({
     id,

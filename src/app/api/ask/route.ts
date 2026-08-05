@@ -4,6 +4,8 @@ import { answerQuestion } from "@/lib/answer";
 import { addAudit, getChunks, listDocuments } from "@/lib/store";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const askSchema = z.object({
   question: z.string().min(3).max(2000),
