@@ -29,6 +29,11 @@ test.describe("CiteGuard", () => {
     await page.getByTestId("citation-button").first().click();
     await expect(page.getByTestId("source-panel")).toBeVisible();
     await expect(page.getByTestId("source-content")).toContainText(/18/i);
+
+    await page.getByTestId("question-input").fill(
+      "What is the secret recipe for the company cafeteria pizza?",
+    );
+    await expect(page.getByTestId("source-panel")).toHaveCount(0);
   });
 
   test("refuses an out-of-scope question", async ({ page }) => {

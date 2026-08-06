@@ -92,6 +92,8 @@ export function CiteGuardApp({
     event.preventDefault();
     setBusy(true);
     setError(null);
+    setSourceView(null);
+    setResult(null);
     try {
       const response = await fetch("/api/ask", {
         method: "POST",
@@ -122,6 +124,13 @@ export function CiteGuardApp({
     } finally {
       setBusy(false);
     }
+  }
+
+  function onQuestionChange(value: string) {
+    setQuestion(value);
+    // Drop the previous citation source view so it does not linger
+    // while the user drafts a different question.
+    setSourceView(null);
   }
 
   async function onUpload(event: React.FormEvent) {
@@ -200,7 +209,7 @@ export function CiteGuardApp({
         <AskForm
           question={question}
           busy={busy}
-          onQuestionChange={setQuestion}
+          onQuestionChange={onQuestionChange}
           onSubmit={(event) => void onAsk(event)}
         />
         <AnswerPanel
