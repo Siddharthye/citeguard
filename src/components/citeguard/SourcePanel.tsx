@@ -11,7 +11,7 @@ export function SourcePanel({ source, onClose }: SourcePanelProps) {
     <section
       id="source-panel"
       data-testid="source-panel"
-      className="glass-strong space-y-4 p-6 sm:p-7"
+      className="glass-strong anim-slide-up space-y-4 p-6 sm:p-7"
     >
       <div className="flex items-center justify-between gap-3">
         <h2 className="font-display text-2xl text-[var(--ink)] sm:text-3xl">
@@ -21,12 +21,13 @@ export function SourcePanel({ source, onClose }: SourcePanelProps) {
           Close
         </button>
       </div>
-      <p className="text-sm text-[var(--ink-muted)]">
+      <p className="anim-pop text-sm text-[var(--ink-muted)]">
         Cited span marked with ⟦ … ⟧
       </p>
       <pre
         data-testid="source-content"
-        className="glass-inset max-h-80 overflow-auto p-4 text-sm leading-relaxed text-[var(--ink)]"
+        className="glass-inset anim-pop max-h-80 overflow-auto p-4 text-sm leading-relaxed text-[var(--ink)]"
+        style={{ animationDelay: "0.1s" }}
       >
         {highlightContent(source.content, source.highlight)}
       </pre>

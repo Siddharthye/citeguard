@@ -18,7 +18,7 @@ export function AuditPanel({ audit }: AuditPanelProps) {
           Export CSV
         </a>
       </div>
-      <ul className="space-y-3" data-testid="audit-list">
+      <ul className="anim-stagger space-y-3" data-testid="audit-list">
         {audit.length === 0 && (
           <li className="text-sm text-[var(--ink-faint)]">No questions yet.</li>
         )}
