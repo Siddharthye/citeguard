@@ -27,7 +27,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           {result.multiSource && !result.refused && (
             <div
               data-testid="conflict-banner"
-              className="border border-[var(--warn)] bg-[#fff7ed] px-3 py-2 text-sm text-[var(--ink)]"
+              className="border border-[var(--warn)] bg-[var(--warn-soft)] px-3 py-2 text-sm text-[var(--ink)]"
               role="status"
             >
               <p className="font-semibold text-[var(--warn)]">
