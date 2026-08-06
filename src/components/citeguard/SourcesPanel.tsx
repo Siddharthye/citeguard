@@ -50,7 +50,8 @@ export function SourcesPanel({
         type="file"
         accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf"
         onChange={(event) => void onFile(event.target.files?.[0] ?? null)}
-                    className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[var(--radius-sm)] file:border-0 file:bg-[var(--midnight)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-[var(--beige)]"      />
+        className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[var(--radius-sm)] file:border-0 file:bg-[var(--midnight)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-[var(--beige)]"
+      />
       <input
         data-testid="upload-name"
         value={uploadName}
