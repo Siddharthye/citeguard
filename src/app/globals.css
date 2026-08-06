@@ -41,26 +41,20 @@
 }
 
 body {
-  background-color: var(--dark-green);
+  background-color: var(--beige);
   background-image:
-    linear-gradient(
-      180deg,
-      rgba(247, 244, 213, 0.55) 0%,
-      rgba(10, 51, 35, 0.35) 45%,
-      rgba(16, 86, 102, 0.45) 100%
-    ),
-    url("/pond-theme.jpg");
-  background-size: cover;
-  background-position: center;
+    radial-gradient(ellipse 90% 55% at 5% -10%, rgba(131, 153, 88, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(16, 86, 102, 0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 40% at 50% 110%, rgba(211, 150, 140, 0.2) 0%, transparent 50%),
+    linear-gradient(165deg, var(--beige) 0%, var(--paper-deep) 55%, #e4efd8 100%);
   background-attachment: fixed;
-  background-repeat: no-repeat;
   color: var(--foreground);
   font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Soft vignette so glass panels stay readable */
+/* Soft light wash so glass panels stay readable */
 body::before {
   content: "";
   pointer-events: none;
@@ -68,8 +62,7 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse 90% 70% at 50% 20%, rgba(247, 244, 213, 0.35) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 60% at 80% 90%, rgba(16, 86, 102, 0.25) 0%, transparent 55%);
+    radial-gradient(ellipse 80% 50% at 30% 10%, rgba(247, 244, 213, 0.65) 0%, transparent 55%);
 }
 
 .font-display {
