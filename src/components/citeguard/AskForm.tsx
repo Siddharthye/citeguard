@@ -32,10 +32,10 @@ export function AskForm({
         type="submit"
         data-testid="ask-button"
         disabled={busy}
-        className={`btn-primary ${busy ? "btn-busy" : ""}`}
+        className={`btn-primary${busy ? " btn-busy" : ""}`}
         aria-busy={busy}
       >
-        {busy ? "Checking sources" : "Ask with citations"}
+        {busy ? "Checking sources…" : "Ask with citations"}
       </button>
     </form>
   );

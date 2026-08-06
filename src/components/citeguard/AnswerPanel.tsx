@@ -12,10 +12,8 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
       {result ? (
         <div
           key={`${result.refused}-${result.answer.slice(0, 48)}`}
-          className={`answer-live space-y-4 border-l-[3px] pl-4 ${
-            result.refused
-              ? "border-[var(--warn)]"
-              : "ok border-[var(--teal)]"
+          className={`space-y-4 border-l-[3px] pl-4 ${
+            result.refused ? "border-[var(--warn)]" : "border-[var(--teal)]"
           }`}
         >
           <p
@@ -28,7 +26,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           {result.multiSource && !result.refused && (
             <div
               data-testid="conflict-banner"
-              className="anim-pop rounded-[var(--radius-sm)] border border-[var(--warn)]/40 bg-[var(--warn-soft)] px-3.5 py-3 text-sm text-[var(--ink)] backdrop-blur-md"
+              className="rounded-[var(--radius-sm)] border border-[var(--warn)]/40 bg-[var(--warn-soft)] px-3.5 py-3 text-sm text-[var(--ink)]"
               role="status"
             >
               <p className="font-semibold text-[var(--warn)]">
@@ -47,9 +45,8 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           )}
 
           <p
-            className="anim-pop text-xs font-medium tracking-wide text-[var(--ink-faint)]"
+            className="text-xs font-medium tracking-wide text-[var(--ink-faint)]"
             data-testid="answer-meta"
-            style={{ animationDelay: "0.08s" }}
           >
             Mode: {result.mode}
             {result.refused ? " · refused" : ""}
@@ -58,7 +55,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           </p>
 
           {result.auditIssues.length > 0 && (
-            <ul className="anim-stagger text-xs text-[var(--warn)]" data-testid="audit-issues">
+            <ul className="text-xs text-[var(--warn)]" data-testid="audit-issues">
               {result.auditIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
@@ -66,7 +63,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           )}
 
           {result.citations.length > 0 && (
-            <ul className="anim-stagger space-y-3" data-testid="citations">
+            <ul className="space-y-3" data-testid="citations">
               {result.citations.map((citation) => (
                 <li key={`${citation.documentId}-${citation.chunkIndex}`}>
                   <button
@@ -93,7 +90,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           )}
         </div>
       ) : (
-        <p className="placeholder-pulse text-[var(--ink-faint)]">
+        <p className="text-[var(--ink-faint)]">
           Answers appear here with source quotes. Out-of-scope questions are
           refused.
         </p>

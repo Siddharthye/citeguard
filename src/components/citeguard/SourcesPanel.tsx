@@ -77,7 +77,7 @@ export function SourcesPanel({
         Add pasted document
       </button>
 
-      <ul className="anim-stagger space-y-2 pt-1" data-testid="document-list">
+      <ul className="space-y-2 pt-1" data-testid="document-list">
         {documents.map((doc) => (
           <li
             key={doc.id}
