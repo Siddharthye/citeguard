@@ -1,30 +1,31 @@
 @import "tailwindcss";
 
-/* CiteGuard — Apple light + rosy brown accent */
+/* CiteGuard — blush glass: warm stone + rosy brown */
 :root {
-  --paper: #f5f5f7;
-  --paper-deep: #ebebef;
-  --ink: #1d1d1f;
-  --ink-muted: #6e6e73;
-  --ink-faint: #86868b;
+  --paper: #f6f1ee;
+  --paper-deep: #ebe3de;
+  --ink: #1a1614;
+  --ink-muted: #5c534e;
+  --ink-faint: #8a807a;
   --rosy: #d3968c;
-  --rosy-deep: #b87970;
+  --rosy-deep: #b8786f;
+  --rosy-soft: rgba(211, 150, 140, 0.2);
   --teal: #d3968c;
-  --teal-deep: #b87970;
+  --teal-deep: #b8786f;
   --accent: #d3968c;
-  --line: rgba(0, 0, 0, 0.08);
-  --line-strong: rgba(0, 0, 0, 0.14);
-  --warn: #b87970;
-  --warn-soft: rgba(211, 150, 140, 0.22);
-  --glass: rgba(255, 255, 255, 0.62);
-  --glass-strong: rgba(255, 255, 255, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --shadow-soft: 0 8px 30px rgba(29, 29, 31, 0.06);
-  --radius: 1.25rem;
-  --radius-sm: 0.875rem;
-  --dark-green: #1d1d1f;
+  --line: rgba(26, 22, 20, 0.08);
+  --line-strong: rgba(26, 22, 20, 0.14);
+  --warn: #b8786f;
+  --warn-soft: rgba(211, 150, 140, 0.24);
+  --glass: rgba(255, 252, 249, 0.55);
+  --glass-strong: rgba(255, 252, 249, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --shadow-soft: 0 18px 50px rgba(26, 22, 20, 0.07);
+  --radius: 1.5rem;
+  --radius-sm: 1rem;
+  --dark-green: #1a1614;
   --moss: #d3968c;
-  --beige: #f5f5f7;
+  --beige: #f6f1ee;
   --midnight: #d3968c;
   --background: var(--paper);
   --foreground: var(--ink);
@@ -37,27 +38,137 @@
   --font-display: var(--font-display);
 }
 
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2%, 3%) scale(1.05);
+  }
+}
+
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3%, 2%) scale(1.08);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
 body {
   background-color: var(--paper);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(211, 150, 140, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 10%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
-    linear-gradient(180deg, #fafafa 0%, var(--paper) 45%, var(--paper-deep) 100%);
-  background-attachment: fixed;
   color: var(--foreground);
-  font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Ambient color fields — no photos */
+body::before,
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  z-index: -2;
+  border-radius: 50%;
+  filter: blur(60px);
 }
 
 body::before {
-  content: none;
+  width: min(70vw, 640px);
+  height: min(70vw, 640px);
+  top: -12%;
+  left: -8%;
+  background: radial-gradient(circle, rgba(211, 150, 140, 0.45) 0%, transparent 70%);
+  animation: float-a 18s ease-in-out infinite;
+}
+
+body::after {
+  width: min(65vw, 560px);
+  height: min(65vw, 560px);
+  right: -10%;
+  bottom: 5%;
+  background: radial-gradient(circle, rgba(232, 198, 176, 0.5) 0%, rgba(196, 168, 160, 0.25) 40%, transparent 70%);
+  animation: float-b 22s ease-in-out infinite;
+}
+
+.app-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.app-shell::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: soft-light;
 }
 
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   color: var(--ink);
+}
+
+.brand-mark {
+  background: linear-gradient(120deg, var(--ink) 20%, var(--rosy-deep) 55%, var(--ink) 90%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 10s ease-in-out infinite alternate;
+}
+
+.brand-rule {
+  width: 4.5rem;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rosy), transparent);
+}
+
+.reveal {
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.reveal-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.reveal-delay-3 {
+  animation-delay: 0.24s;
 }
 
 .glass {
@@ -65,32 +176,51 @@ body::before {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.glass:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 56px rgba(26, 22, 20, 0.09);
+  border-color: rgba(211, 150, 140, 0.35);
 }
 
 .glass-strong {
   background: var(--glass-strong);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.88);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(34px) saturate(180%);
+  -webkit-backdrop-filter: blur(34px) saturate(180%);
 }
 
 .glass-inset {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(26, 22, 20, 0.06);
   border-radius: var(--radius-sm);
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.glass-inset:hover {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(211, 150, 140, 0.35);
 }
 
 .field {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.72);
   color: var(--ink);
   outline: none;
   transition:
@@ -100,9 +230,9 @@ body::before {
 }
 
 .field:focus {
-  border-color: rgba(211, 150, 140, 0.7);
+  border-color: rgba(211, 150, 140, 0.75);
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(211, 150, 140, 0.22);
+  box-shadow: 0 0 0 4px var(--rosy-soft);
 }
 
 .btn-primary {
@@ -110,19 +240,24 @@ body::before {
   align-items: center;
   justify-content: center;
   border-radius: 980px;
-  background: var(--rosy);
-  padding: 0.7rem 1.4rem;
+  background: linear-gradient(135deg, #e0a89f 0%, var(--rosy) 45%, var(--rosy-deep) 100%);
+  padding: 0.8rem 1.55rem;
   font-size: 0.9rem;
   font-weight: 600;
   color: #fff;
+  letter-spacing: 0.01em;
+  box-shadow: 0 10px 24px rgba(211, 150, 140, 0.35);
   transition:
-    background 0.2s ease,
-    transform 0.15s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
     opacity 0.2s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--rosy-deep);
+  filter: brightness(1.03);
+  box-shadow: 0 14px 28px rgba(184, 120, 111, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -131,6 +266,7 @@ body::before {
 
 .btn-primary:disabled {
   opacity: 0.5;
+  box-shadow: none;
 }
 
 .btn-secondary {
@@ -139,8 +275,8 @@ body::before {
   justify-content: center;
   border-radius: 980px;
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.7);
-  padding: 0.6rem 1.15rem;
+  background: rgba(255, 255, 255, 0.65);
+  padding: 0.65rem 1.2rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--ink);
@@ -169,9 +305,24 @@ body::before {
 
 .label-caps {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--rosy-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .brand-mark,
+  .reveal,
+  .glass {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .glass:hover {
+    transform: none;
+  }
 }
