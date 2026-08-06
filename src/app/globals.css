@@ -1,30 +1,31 @@
 @import "tailwindcss";
 
-/* CiteGuard — clean Apple light + frosted glass */
+/* CiteGuard — Apple light + rosy brown accent */
 :root {
   --paper: #f5f5f7;
   --paper-deep: #ebebef;
   --ink: #1d1d1f;
   --ink-muted: #6e6e73;
   --ink-faint: #86868b;
-  --teal: #0071e3;
-  --teal-deep: #0077ed;
-  --accent: #0071e3;
+  --rosy: #d3968c;
+  --rosy-deep: #b87970;
+  --teal: #d3968c;
+  --teal-deep: #b87970;
+  --accent: #d3968c;
   --line: rgba(0, 0, 0, 0.08);
   --line-strong: rgba(0, 0, 0, 0.14);
-  --warn: #bf4800;
-  --warn-soft: rgba(255, 149, 0, 0.14);
+  --warn: #b87970;
+  --warn-soft: rgba(211, 150, 140, 0.22);
   --glass: rgba(255, 255, 255, 0.62);
   --glass-strong: rgba(255, 255, 255, 0.78);
   --glass-border: rgba(255, 255, 255, 0.7);
-  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 8px 30px rgba(29, 29, 31, 0.06);
   --radius: 1.25rem;
   --radius-sm: 0.875rem;
   --dark-green: #1d1d1f;
-  --moss: #0071e3;
+  --moss: #d3968c;
   --beige: #f5f5f7;
-  --rosy: #bf4800;
-  --midnight: #0071e3;
+  --midnight: #d3968c;
   --background: var(--paper);
   --foreground: var(--ink);
 }
@@ -39,8 +40,8 @@
 body {
   background-color: var(--paper);
   background-image:
-    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(0, 113, 227, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 10%, rgba(0, 0, 0, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(211, 150, 140, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 10%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
     linear-gradient(180deg, #fafafa 0%, var(--paper) 45%, var(--paper-deep) 100%);
   background-attachment: fixed;
   color: var(--foreground);
@@ -99,9 +100,9 @@ body::before {
 }
 
 .field:focus {
-  border-color: rgba(0, 113, 227, 0.55);
+  border-color: rgba(211, 150, 140, 0.7);
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+  box-shadow: 0 0 0 4px rgba(211, 150, 140, 0.22);
 }
 
 .btn-primary {
@@ -109,7 +110,7 @@ body::before {
   align-items: center;
   justify-content: center;
   border-radius: 980px;
-  background: var(--teal);
+  background: var(--rosy);
   padding: 0.7rem 1.4rem;
   font-size: 0.9rem;
   font-weight: 600;
@@ -121,7 +122,7 @@ body::before {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--teal-deep);
+  background: var(--rosy-deep);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -172,5 +173,5 @@ body::before {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--rosy-deep);
 }
