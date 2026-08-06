@@ -23,7 +23,7 @@ function scrollToSourcePanel() {
   requestAnimationFrame(() => {
     document.getElementById("source-panel")?.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "center",
     });
   });
 }

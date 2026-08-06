@@ -73,7 +73,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
                     type="button"
                     data-testid="citation-button"
                     onClick={() => onOpenCitation(citation)}
-                    className="glass-inset w-full p-3.5 text-left text-sm leading-relaxed text-[var(--ink-muted)] transition hover:bg-white/80 hover:translate-x-0.5"
+                    className="glass-inset w-full p-3.5 text-left text-sm leading-relaxed text-[var(--ink-muted)]"
                   >
                     <span className="font-semibold text-[var(--ink)]">
                       {citation.documentName}
