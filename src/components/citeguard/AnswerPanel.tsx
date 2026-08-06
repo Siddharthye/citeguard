@@ -7,19 +7,17 @@ type AnswerPanelProps = {
 
 export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
   return (
-    <div className="space-y-3" data-testid="answer-panel">
-      <p className="text-sm font-medium uppercase tracking-[0.14em] text-[var(--teal)]">
-        Answer
-      </p>
+    <div className="glass space-y-4 p-6 sm:p-7" data-testid="answer-panel">
+      <p className="label-caps">Answer</p>
       {result ? (
         <div
-          className={`space-y-4 border-l-4 pl-4 ${
+          className={`space-y-4 border-l-[3px] pl-4 ${
             result.refused ? "border-[var(--warn)]" : "border-[var(--teal)]"
           }`}
         >
           <p
             data-testid="answer-text"
-            className="whitespace-pre-wrap text-base leading-relaxed text-[var(--ink)]"
+            className="whitespace-pre-wrap text-[1.05rem] leading-relaxed text-[var(--ink)]"
           >
             {result.answer}
           </p>
@@ -27,7 +25,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           {result.multiSource && !result.refused && (
             <div
               data-testid="conflict-banner"
-              className="border border-[var(--warn)] bg-[var(--warn-soft)] px-3 py-2 text-sm text-[var(--ink)]"
+              className="rounded-[var(--radius-sm)] border border-[var(--warn)]/40 bg-[var(--warn-soft)] px-3.5 py-3 text-sm text-[var(--ink)] backdrop-blur-md"
               role="status"
             >
               <p className="font-semibold text-[var(--warn)]">
@@ -46,7 +44,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           )}
 
           <p
-            className="text-xs uppercase tracking-wider text-[var(--ink-faint)]"
+            className="text-xs font-medium tracking-wide text-[var(--ink-faint)]"
             data-testid="answer-meta"
           >
             Mode: {result.mode}
@@ -71,7 +69,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
                     type="button"
                     data-testid="citation-button"
                     onClick={() => onOpenCitation(citation)}
-                    className="w-full bg-white/70 p-3 text-left text-sm leading-relaxed text-[var(--ink-muted)] transition hover:bg-white"
+                    className="glass-inset w-full p-3.5 text-left text-sm leading-relaxed text-[var(--ink-muted)] transition hover:bg-white/80"
                   >
                     <span className="font-semibold text-[var(--ink)]">
                       {citation.documentName}
@@ -81,7 +79,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
                       · chunk {citation.chunkIndex + 1} · score{" "}
                       {citation.score.toFixed(2)} · view source
                     </span>
-                    <p className="mt-2 border-l-2 border-[var(--line)] pl-3 italic">
+                    <p className="mt-2 border-l-2 border-[var(--teal)]/30 pl-3 italic text-[var(--ink-muted)]">
                       “{citation.quote}”
                     </p>
                   </button>

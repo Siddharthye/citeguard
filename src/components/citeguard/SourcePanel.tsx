@@ -11,17 +11,13 @@ export function SourcePanel({ source, onClose }: SourcePanelProps) {
     <section
       id="source-panel"
       data-testid="source-panel"
-      className="space-y-3 border border-[var(--line)] bg-white/70 p-5"
+      className="glass-strong space-y-4 p-6 sm:p-7"
     >
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-2xl text-[var(--ink)]">
+        <h2 className="font-display text-2xl text-[var(--ink)] sm:text-3xl">
           Source: {source.name}
         </h2>
-        <button
-          type="button"
-          className="text-sm text-[var(--ink-muted)] underline"
-          onClick={onClose}
-        >
+        <button type="button" className="btn-secondary" onClick={onClose}>
           Close
         </button>
       </div>
@@ -30,7 +26,7 @@ export function SourcePanel({ source, onClose }: SourcePanelProps) {
       </p>
       <pre
         data-testid="source-content"
-        className="max-h-80 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-[var(--ink)]"
+        className="glass-inset max-h-80 overflow-auto p-4 text-sm leading-relaxed text-[var(--ink)]"
       >
         {highlightContent(source.content, source.highlight)}
       </pre>

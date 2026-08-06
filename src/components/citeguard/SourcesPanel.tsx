@@ -22,27 +22,42 @@ export function SourcesPanel({
   onSubmit,
 }: SourcesPanelProps) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4" data-testid="upload-form">
-      <h2 className="font-display text-3xl text-[var(--ink)]">Sources</h2>
-      <p className="text-sm text-[var(--ink-muted)]">
-        Paste policy text or upload{" "}
-        <code className="text-[var(--teal-deep)]">.txt</code> /{" "}
-        <code className="text-[var(--teal-deep)]">.md</code> /{" "}
-        <code className="text-[var(--teal-deep)]">.pdf</code>.
-      </p>
+    <form
+      onSubmit={onSubmit}
+      className="glass space-y-5 p-6 sm:p-7"
+      data-testid="upload-form"
+    >
+      <div className="space-y-2">
+        <h2 className="font-display text-3xl text-[var(--ink)]">Sources</h2>
+        <p className="text-sm text-[var(--ink-muted)]">
+          Paste policy text or upload{" "}
+          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+            .txt
+          </code>{" "}
+          /{" "}
+          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+            .md
+          </code>{" "}
+          /{" "}
+          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+            .pdf
+          </code>
+          .
+        </p>
+      </div>
       <input
         data-testid="file-input"
         type="file"
         accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf"
         onChange={(event) => void onFile(event.target.files?.[0] ?? null)}
-        className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:border-0 file:bg-[var(--ink)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--paper)]"
+        className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[var(--radius-sm)] file:border-0 file:bg-[var(--ink)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-[#f8fafc]"
       />
       <input
         data-testid="upload-name"
         value={uploadName}
         onChange={(event) => onUploadNameChange(event.target.value)}
         placeholder="Document name"
-        className="w-full border border-[var(--line)] bg-white/80 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--teal)]"
+        className="field px-3.5 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
       />
       <textarea
         data-testid="upload-content"
@@ -50,23 +65,23 @@ export function SourcesPanel({
         onChange={(event) => onUploadContentChange(event.target.value)}
         rows={6}
         placeholder="Paste policy text (not needed for PDF — upload file directly)…"
-        className="w-full border border-[var(--line)] bg-white/80 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--teal)]"
+        className="field resize-y px-3.5 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
         required
       />
       <button
         type="submit"
         data-testid="upload-button"
         disabled={busy}
-        className="border border-[var(--ink)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper)] disabled:opacity-50"
+        className="btn-secondary"
       >
         Add pasted document
       </button>
 
-      <ul className="space-y-2 pt-2" data-testid="document-list">
+      <ul className="space-y-2 pt-1" data-testid="document-list">
         {documents.map((doc) => (
           <li
             key={doc.id}
-            className="flex items-center justify-between gap-3 text-sm text-[var(--ink-muted)]"
+            className="glass-inset flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm text-[var(--ink-muted)]"
           >
             <span>{doc.name}</span>
             <time className="text-xs text-[var(--ink-faint)]">

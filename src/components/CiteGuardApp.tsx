@@ -194,8 +194,8 @@ export function CiteGuardApp({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-14 px-5 py-10 sm:px-8 sm:py-16">
-      <header className="space-y-5">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 py-10 sm:gap-12 sm:px-8 sm:py-16">
+      <header className="space-y-4 sm:space-y-5">
         <p className="font-display text-5xl tracking-tight text-[var(--ink)] sm:text-7xl">
           CiteGuard
         </p>
@@ -205,7 +205,7 @@ export function CiteGuardApp({
         </h1>
       </header>
 
-      <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-7">
         <AskForm
           question={question}
           busy={busy}
@@ -223,12 +223,15 @@ export function CiteGuardApp({
       )}
 
       {error && (
-        <p className="text-sm text-[var(--warn)]" role="alert">
+        <p
+          className="glass-inset px-4 py-3 text-sm text-[var(--warn)]"
+          role="alert"
+        >
           {error}
         </p>
       )}
 
-      <section className="grid gap-10 border-t border-[var(--line)] pt-12 lg:grid-cols-2">
+      <section className="grid gap-6 pt-2 lg:grid-cols-2 lg:gap-7">
         <SourcesPanel
           documents={documents}
           busy={busy}

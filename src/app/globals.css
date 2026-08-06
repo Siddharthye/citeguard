@@ -1,18 +1,24 @@
 @import "tailwindcss";
 
-/* CiteGuard — evidence blue: cool paper, navy ink, cobalt signal */
+/* CiteGuard — evidence blue + frosted Apple-style surfaces */
 :root {
-  --paper: #f3f5f9;
-  --paper-deep: #e6ebf3;
+  --paper: #eef2f8;
+  --paper-deep: #dde5f2;
   --ink: #0b1c2c;
   --ink-muted: #3d5266;
   --ink-faint: #7a8fa3;
   --teal: #1d4ed8;
   --teal-deep: #1e3a8a;
-  --line: #c5d0e0;
+  --line: rgba(15, 40, 80, 0.12);
+  --line-strong: rgba(15, 40, 80, 0.18);
   --warn: #c2410c;
-  --warn-soft: #fff4ed;
-  --surface: rgba(255, 255, 255, 0.78);
+  --warn-soft: rgba(255, 244, 237, 0.85);
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --shadow-soft: 0 8px 32px rgba(15, 40, 80, 0.08);
+  --radius: 1.25rem;
+  --radius-sm: 0.875rem;
   --background: var(--paper);
   --foreground: var(--ink);
 }
@@ -26,32 +32,148 @@
 
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 0% -5%, #c7d7f5 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 5%, #d4e4f0 0%, transparent 50%),
-    radial-gradient(ellipse 50% 35% at 70% 100%, #e0e7ff 0%, transparent 45%),
+    radial-gradient(ellipse 90% 55% at 5% -10%, #b8cdf8 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, #c5dff0 0%, transparent 52%),
+    radial-gradient(ellipse 55% 40% at 60% 110%, #d4dcff 0%, transparent 50%),
     linear-gradient(165deg, var(--paper) 0%, var(--paper-deep) 100%);
   background-attachment: fixed;
   color: var(--foreground);
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   min-height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Soft evidence-grid atmosphere (not a flat fill) */
 body::before {
   content: "";
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: -1;
-  opacity: 0.35;
+  opacity: 0.28;
   background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 75% 60% at 50% 30%, #000 20%, transparent 75%);
+    linear-gradient(rgba(120, 140, 180, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 140, 180, 0.35) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 25%, #000 15%, transparent 70%);
 }
 
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  letter-spacing: -0.03em;
+}
+
+/* Frosted glass panels (interaction surfaces) */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+}
+
+.glass-inset {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+.field {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.field:focus {
+  border-color: rgba(29, 78, 216, 0.45);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  padding: 0.7rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f8fafc;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--teal-deep);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #f8fafc;
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+}
+
+.label-caps {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
 }

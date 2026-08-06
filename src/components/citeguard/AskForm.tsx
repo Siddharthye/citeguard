@@ -12,17 +12,19 @@ export function AskForm({
   onSubmit,
 }: AskFormProps) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4" data-testid="ask-form">
-      <label className="block text-sm font-medium uppercase tracking-[0.14em] text-[var(--teal)]">
-        Question
-      </label>
+    <form
+      onSubmit={onSubmit}
+      className="glass space-y-5 p-6 sm:p-7"
+      data-testid="ask-form"
+    >
+      <label className="label-caps">Question</label>
       <textarea
         data-testid="question-input"
         value={question}
         onChange={(event) => onQuestionChange(event.target.value)}
         rows={4}
         placeholder="How many paid leave days do employees get?"
-        className="w-full resize-y rounded-sm border border-[var(--line)] bg-white/80 px-4 py-3 text-base text-[var(--ink)] outline-none ring-[var(--teal)] placeholder:text-[var(--ink-faint)] focus:ring-2"
+        className="field resize-y px-4 py-3.5 text-base placeholder:text-[var(--ink-faint)]"
         required
         minLength={3}
       />
@@ -30,7 +32,7 @@ export function AskForm({
         type="submit"
         data-testid="ask-button"
         disabled={busy}
-        className="bg-[var(--ink)] px-5 py-2.5 text-sm font-semibold text-[var(--paper)] transition hover:bg-[var(--teal-deep)] disabled:opacity-50"
+        className="btn-primary"
       >
         {busy ? "Checking sources…" : "Ask with citations"}
       </button>
