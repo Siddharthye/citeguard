@@ -196,10 +196,10 @@ export function CiteGuardApp({
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 py-10 sm:gap-12 sm:px-8 sm:py-16">
       <header className="space-y-4 sm:space-y-5">
-        <p className="font-display text-5xl tracking-tight text-[var(--ink)] sm:text-7xl">
+        <p className="font-display text-5xl tracking-tight text-[var(--dark-green)] sm:text-7xl">
           CiteGuard
         </p>
-        <h1 className="max-w-2xl text-xl font-medium leading-snug text-[var(--ink-muted)] sm:text-2xl">
+        <h1 className="max-w-2xl text-xl font-medium leading-snug text-[var(--midnight)]/90 sm:text-2xl">
           Ask policy questions. Get answers only when the documents support them —
           with the exact passage attached.
         </h1>

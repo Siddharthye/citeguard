@@ -1,24 +1,34 @@
 @import "tailwindcss";
 
-/* CiteGuard — evidence blue + frosted Apple-style surfaces */
+/*
+  CiteGuard — lily pond palette
+  Dark green #0A3323 · Moss #839958 · Beige #F7F4D5 · Rosy #D3968C · Midnight #105666
+*/
 :root {
-  --paper: #eef2f8;
-  --paper-deep: #dde5f2;
-  --ink: #0b1c2c;
-  --ink-muted: #3d5266;
-  --ink-faint: #7a8fa3;
-  --teal: #1d4ed8;
-  --teal-deep: #1e3a8a;
-  --line: rgba(15, 40, 80, 0.12);
-  --line-strong: rgba(15, 40, 80, 0.18);
-  --warn: #c2410c;
-  --warn-soft: rgba(255, 244, 237, 0.85);
-  --glass: rgba(255, 255, 255, 0.55);
-  --glass-strong: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.65);
-  --shadow-soft: 0 8px 32px rgba(15, 40, 80, 0.08);
-  --radius: 1.25rem;
-  --radius-sm: 0.875rem;
+  --dark-green: #0a3323;
+  --moss: #839958;
+  --beige: #f7f4d5;
+  --rosy: #d3968c;
+  --midnight: #105666;
+
+  --paper: #f7f4d5;
+  --paper-deep: #ebe6c4;
+  --ink: #0a3323;
+  --ink-muted: #105666;
+  --ink-faint: #6b7f5a;
+  --teal: #105666;
+  --teal-deep: #0a3323;
+  --accent: #839958;
+  --line: rgba(10, 51, 35, 0.14);
+  --line-strong: rgba(10, 51, 35, 0.22);
+  --warn: #d3968c;
+  --warn-soft: rgba(211, 150, 140, 0.28);
+  --glass: rgba(247, 244, 213, 0.52);
+  --glass-strong: rgba(247, 244, 213, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --shadow-soft: 0 10px 40px rgba(10, 51, 35, 0.12);
+  --radius: 1.35rem;
+  --radius-sm: 0.95rem;
   --background: var(--paper);
   --foreground: var(--ink);
 }
@@ -31,69 +41,74 @@
 }
 
 body {
-  background:
-    radial-gradient(ellipse 90% 55% at 5% -10%, #b8cdf8 0%, transparent 55%),
-    radial-gradient(ellipse 70% 50% at 100% 0%, #c5dff0 0%, transparent 52%),
-    radial-gradient(ellipse 55% 40% at 60% 110%, #d4dcff 0%, transparent 50%),
-    linear-gradient(165deg, var(--paper) 0%, var(--paper-deep) 100%);
+  background-color: var(--dark-green);
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(247, 244, 213, 0.55) 0%,
+      rgba(10, 51, 35, 0.35) 45%,
+      rgba(16, 86, 102, 0.45) 100%
+    ),
+    url("/pond-theme.jpg");
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--foreground);
-  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Soft vignette so glass panels stay readable */
 body::before {
   content: "";
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: -1;
-  opacity: 0.28;
-  background-image:
-    linear-gradient(rgba(120, 140, 180, 0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(120, 140, 180, 0.35) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 70% 55% at 50% 25%, #000 15%, transparent 70%);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 20%, rgba(247, 244, 213, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%, rgba(16, 86, 102, 0.25) 0%, transparent 55%);
 }
 
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, serif;
   letter-spacing: -0.03em;
+  color: var(--ink);
 }
 
-/* Frosted glass panels (interaction surfaces) */
 .glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
 }
 
 .glass-strong {
   background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.62);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(28px) saturate(170%);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
 }
 
 .glass-inset {
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-sm);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 .field {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.55);
   color: var(--ink);
   outline: none;
   transition:
@@ -103,9 +118,9 @@ body::before {
 }
 
 .field:focus {
-  border-color: rgba(29, 78, 216, 0.45);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+  border-color: rgba(16, 86, 102, 0.55);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 0 0 4px rgba(131, 153, 88, 0.28);
 }
 
 .btn-primary {
@@ -113,11 +128,11 @@ body::before {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  background: var(--ink);
-  padding: 0.7rem 1.25rem;
-  font-size: 0.875rem;
+  background: var(--midnight);
+  padding: 0.75rem 1.35rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #f8fafc;
+  color: var(--beige);
   transition:
     background 0.2s ease,
     transform 0.15s ease,
@@ -125,7 +140,7 @@ body::before {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--teal-deep);
+  background: var(--dark-green);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -142,23 +157,24 @@ body::before {
   justify-content: center;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.5);
-  padding: 0.6rem 1rem;
+  background: rgba(247, 244, 213, 0.55);
+  padding: 0.65rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--ink);
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
+    color 0.2s ease,
     transform 0.15s ease;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #f8fafc;
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--beige);
 }
 
 .btn-secondary:active:not(:disabled) {
@@ -173,7 +189,7 @@ body::before {
   display: block;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--midnight);
 }

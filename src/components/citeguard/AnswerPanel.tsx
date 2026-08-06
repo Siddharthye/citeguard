@@ -12,7 +12,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
       {result ? (
         <div
           className={`space-y-4 border-l-[3px] pl-4 ${
-            result.refused ? "border-[var(--warn)]" : "border-[var(--teal)]"
+            result.refused ? "border-[var(--rosy)]" : "border-[var(--moss)]"
           }`}
         >
           <p
@@ -79,7 +79,7 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
                       · chunk {citation.chunkIndex + 1} · score{" "}
                       {citation.score.toFixed(2)} · view source
                     </span>
-                    <p className="mt-2 border-l-2 border-[var(--teal)]/30 pl-3 italic text-[var(--ink-muted)]">
+                    <p className="mt-2 border-l-2 border-[var(--moss)]/50 pl-3 italic text-[var(--ink-muted)]">
                       “{citation.quote}”
                     </p>
                   </button>

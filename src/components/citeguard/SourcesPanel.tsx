@@ -31,15 +31,15 @@ export function SourcesPanel({
         <h2 className="font-display text-3xl text-[var(--ink)]">Sources</h2>
         <p className="text-sm text-[var(--ink-muted)]">
           Paste policy text or upload{" "}
-          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+          <code className="rounded-md bg-white/40 px-1.5 py-0.5 text-[var(--midnight)]">
             .txt
           </code>{" "}
           /{" "}
-          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+          <code className="rounded-md bg-white/40 px-1.5 py-0.5 text-[var(--midnight)]">
             .md
           </code>{" "}
           /{" "}
-          <code className="rounded-md bg-white/50 px-1.5 py-0.5 text-[var(--teal-deep)]">
+          <code className="rounded-md bg-white/40 px-1.5 py-0.5 text-[var(--midnight)]">
             .pdf
           </code>
           .
@@ -50,8 +50,7 @@ export function SourcesPanel({
         type="file"
         accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf"
         onChange={(event) => void onFile(event.target.files?.[0] ?? null)}
-        className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[var(--radius-sm)] file:border-0 file:bg-[var(--ink)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-[#f8fafc]"
-      />
+                    className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[var(--radius-sm)] file:border-0 file:bg-[var(--midnight)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-[var(--beige)]"      />
       <input
         data-testid="upload-name"
         value={uploadName}
