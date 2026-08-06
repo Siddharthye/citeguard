@@ -194,20 +194,20 @@ export function CiteGuardApp({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-5 py-10 sm:gap-12 sm:px-8 sm:py-16">
-      <header className="space-y-5 sm:space-y-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:gap-12 sm:px-8 sm:py-16">
+      <header className="space-y-4 sm:space-y-6">
         <p className="label-caps">scodes · Track C</p>
-        <p className="brand-mark font-display text-6xl font-semibold tracking-tight sm:text-8xl">
+        <p className="brand-mark font-display text-[2.75rem] font-semibold tracking-tight sm:text-6xl md:text-8xl">
           CiteGuard
         </p>
         <div className="brand-rule" aria-hidden />
-        <h1 className="max-w-xl text-lg font-medium leading-relaxed text-[var(--ink-muted)] sm:text-2xl sm:leading-snug">
+        <h1 className="max-w-xl text-base font-medium leading-relaxed text-[var(--ink-muted)] sm:text-2xl sm:leading-snug">
           Ask policy questions. Get answers only when the documents support them —
           with the exact passage attached.
         </h1>
       </header>
 
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-7">
+      <section className="grid gap-4 sm:gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-7">
         <AskForm
           question={question}
           busy={busy}
@@ -226,14 +226,14 @@ export function CiteGuardApp({
 
       {error && (
         <p
-          className="glass-inset px-4 py-3 text-sm text-[var(--warn)]"
+          className="glass-inset break-safe px-4 py-3 text-sm text-[var(--warn)]"
           role="alert"
         >
           {error}
         </p>
       )}
 
-      <section className="grid gap-6 pt-2 lg:grid-cols-2 lg:gap-7">
+      <section className="grid gap-4 pt-1 sm:gap-6 sm:pt-2 lg:grid-cols-2 lg:gap-7">
         <SourcesPanel
           documents={documents}
           busy={busy}

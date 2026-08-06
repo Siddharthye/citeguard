@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* CiteGuard — light blush UI (performance-first, no heavy blur/grain) */
+/* CiteGuard — light blush UI (performance-first, phone-friendly) */
 :root {
   --paper: #f7f3f1;
   --paper-deep: #efe8e4;
@@ -30,6 +30,10 @@
   --background: var(--paper);
   --foreground: var(--ink);
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 @theme inline {
@@ -41,6 +45,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -64,17 +70,23 @@ body {
   color: var(--foreground);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   min-height: 100%;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding:
+    var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
 }
 
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, serif;
   letter-spacing: -0.03em;
   color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
 .brand-mark {
   color: var(--ink);
+  line-height: 0.95;
 }
 
 .brand-rule {
@@ -125,11 +137,13 @@ body {
 
 .field {
   width: 100%;
+  max-width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: #fff;
   color: var(--ink);
   outline: none;
+  font-size: 1rem;
   transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
@@ -142,13 +156,21 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.75rem;
+  width: 100%;
   border-radius: 980px;
   background: var(--rosy);
-  padding: 0.75rem 1.4rem;
-  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #fff;
   transition: background 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+@media (min-width: 640px) {
+  .btn-primary {
+    width: auto;
+  }
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -168,6 +190,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.75rem;
   border-radius: 980px;
   border: 1px solid var(--line-strong);
   background: #fff;
@@ -198,4 +221,9 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--rosy-deep);
+}
+
+.break-safe {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }

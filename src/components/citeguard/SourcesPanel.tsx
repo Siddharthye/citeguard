@@ -24,11 +24,11 @@ export function SourcesPanel({
   return (
     <form
       onSubmit={onSubmit}
-      className="glass space-y-5 p-6 sm:p-7"
+      className="glass space-y-4 p-4 sm:space-y-5 sm:p-7"
       data-testid="upload-form"
     >
       <div className="space-y-2">
-        <h2 className="font-display text-3xl text-[var(--ink)]">Sources</h2>
+        <h2 className="font-display text-2xl text-[var(--ink)] sm:text-3xl">Sources</h2>
         <p className="text-sm text-[var(--ink-muted)]">
           Paste policy text or upload{" "}
           <code className="rounded-md bg-black/[0.04] px-1.5 py-0.5 text-[var(--teal)]">
@@ -50,29 +50,30 @@ export function SourcesPanel({
         type="file"
         accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf"
         onChange={(event) => void onFile(event.target.files?.[0] ?? null)}
-        className="block w-full text-sm text-[var(--ink-muted)] file:mr-3 file:rounded-[980px] file:border-0 file:bg-[var(--ink)] file:px-3.5 file:py-2 file:text-sm file:font-semibold file:text-white"
+        className="block w-full max-w-full text-sm text-[var(--ink-muted)] file:mr-3 file:mb-2 file:rounded-[980px] file:border-0 file:bg-[var(--ink)] file:px-3.5 file:py-2.5 file:text-sm file:font-semibold file:text-white sm:file:mb-0"
       />
       <input
         data-testid="upload-name"
         value={uploadName}
         onChange={(event) => onUploadNameChange(event.target.value)}
         placeholder="Document name"
-        className="field px-3.5 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
+        className="field px-3.5 py-3 placeholder:text-[var(--ink-faint)]"
+        autoComplete="off"
       />
       <textarea
         data-testid="upload-content"
         value={uploadContent}
         onChange={(event) => onUploadContentChange(event.target.value)}
-        rows={6}
+        rows={5}
         placeholder="Paste policy text (not needed for PDF — upload file directly)…"
-        className="field resize-y px-3.5 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
+        className="field resize-y px-3.5 py-3 placeholder:text-[var(--ink-faint)]"
         required
       />
       <button
         type="submit"
         data-testid="upload-button"
         disabled={busy}
-        className="btn-secondary"
+        className="btn-secondary w-full sm:w-auto"
       >
         Add pasted document
       </button>
@@ -81,10 +82,10 @@ export function SourcesPanel({
         {documents.map((doc) => (
           <li
             key={doc.id}
-            className="glass-inset flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm text-[var(--ink-muted)]"
+            className="glass-inset flex flex-col gap-1 px-3.5 py-3 text-sm text-[var(--ink-muted)] sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:py-2.5"
           >
-            <span>{doc.name}</span>
-            <time className="text-xs text-[var(--ink-faint)]">
+            <span className="break-safe font-medium text-[var(--ink)]">{doc.name}</span>
+            <time className="shrink-0 text-xs text-[var(--ink-faint)]">
               {new Date(doc.uploadedAt).toLocaleString()}
             </time>
           </li>
