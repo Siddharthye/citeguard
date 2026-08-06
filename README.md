@@ -4,7 +4,9 @@
 
 Ask questions against uploaded policies. Get answers only when the documents support them — with the exact passage cited — or a clear refusal. A **runtime Citation Auditor** verifies every quote.
 
-**Live demo:** https://citeguard-two.vercel.app
+**Live demo:** https://citeguard-two.vercel.app  
+**Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.3.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0)  
+**Demos:** [`demos/`](demos/) screenshots + [`citeguard-demo.webm`](demos/citeguard-demo.webm) · Judge paste card: [`SUBMISSION.md`](SUBMISSION.md)
 
 ## Clone → run in ~60 seconds
 

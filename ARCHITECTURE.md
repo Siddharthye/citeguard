@@ -65,4 +65,5 @@ See `DAY2_PLAYBOOK.md` and `DECISIONS.md`. Designed so surprise requirements lan
 - `src/lib/extract.ts` — txt/md/pdf text extraction
 - `src/lib/answer.ts` — extractive / LLM answering + auditor veto
 - `src/lib/store.ts` — documents, chunks, audit
-- `src/components/CiteGuardApp.tsx` — primary UI (citation → source jump)
+- `src/components/CiteGuardApp.tsx` — UI shell (state + wiring)
+- `src/components/citeguard/*` — Ask / Answer / Source / Sources / Audit panels

@@ -1,7 +1,9 @@
 # CiteGuard demo guide (~3 minutes)
 
 Repo: https://github.com/Siddharthye/citeguard  
-Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.1.0
+Live: https://citeguard-two.vercel.app  
+Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0  
+Video: `demos/citeguard-demo.webm`
 
 ## Screenshots (ready to submit)
 
@@ -26,7 +28,7 @@ Open http://localhost:3000 and narrate:
 3. **Refuse** — ask something not in the docs → “I don’t know”.  
 4. **Upload** — paste a short travel policy → ask about business class → citation from new doc.  
 5. **Audit / export** — scroll audit log → click **Export CSV**.  
-6. **ADLC** — open GitHub: `ARCHITECTURE.md`, `AGENTS.md`, `AGENTS_AND_SKILLS.md`, green Actions, `v0.1.0`.
+6. **ADLC** — open GitHub: `ARCHITECTURE.md`, `AGENTS.md`, `AGENTS_AND_SKILLS.md`, green Actions, `v0.3.0`.
 
 ## Re-record
 
