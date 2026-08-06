@@ -56,4 +56,16 @@ Expenses of $75 or more require written manager approval before purchase.`;
     assert.equal(result.citations.length, 0);
     assert.match(result.answer, /I don't know/i);
   });
+
+  it("refuses pizza questions that only share a weak token like week", async () => {
+    const fullPolicy = `Employees receive 18 days of paid annual leave each calendar year.
+Employees may work remotely up to 3 days per week after completing probation.`;
+    const chunks = chunkText(fullPolicy, "d1", "policy.md");
+    const result = await answerQuestion(
+      "What is the cafeteria pizza topping of the week?",
+      chunks,
+    );
+    assert.equal(result.refused, true);
+    assert.equal(result.citations.length, 0);
+  });
 });

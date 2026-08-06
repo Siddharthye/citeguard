@@ -4,7 +4,15 @@ import type { Chunk, Citation } from "./types";
 export type ScoredChunk = {
   chunk: Chunk;
   score: number;
+  /** Distinct query tokens found in the chunk. */
+  overlap: number;
 };
+
+/**
+ * At least this many query terms must hit a chunk before we treat it as
+ * evidence. Blocks weak single-token matches (e.g. "week" → "per week").
+ */
+export const MIN_OVERLAP_TERMS = 2;
 
 /** Score chunks by overlapping query terms (TF-style). */
 export function scoreChunks(question: string, chunks: Chunk[]): ScoredChunk[] {
@@ -12,11 +20,13 @@ export function scoreChunks(question: string, chunks: Chunk[]): ScoredChunk[] {
   if (queryTokens.length === 0 || chunks.length === 0) return [];
 
   const querySet = new Set(queryTokens);
+  const minOverlap =
+    querySet.size >= MIN_OVERLAP_TERMS ? MIN_OVERLAP_TERMS : 1;
 
   return chunks
     .map((chunk) => {
       const tokens = tokenize(chunk.text);
-      if (tokens.length === 0) return { chunk, score: 0 };
+      if (tokens.length === 0) return { chunk, score: 0, overlap: 0 };
 
       const counts = new Map<string, number>();
       for (const token of tokens) {
@@ -33,9 +43,13 @@ export function scoreChunks(question: string, chunks: Chunk[]): ScoredChunk[] {
         }
       }
 
+      if (overlap < minOverlap) {
+        return { chunk, score: 0, overlap };
+      }
+
       const coverage = overlap / querySet.size;
       const score = coverage * 0.65 + (weight / querySet.size) * 0.35;
-      return { chunk, score };
+      return { chunk, score, overlap };
     })
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score);

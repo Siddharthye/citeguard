@@ -21,9 +21,9 @@
 
 ## ADR-003: Refusal threshold 0.18
 
-**Decision:** If best chunk score `< 0.18`, refuse with zero citations.
+**Decision:** If best chunk score `< 0.18`, refuse with zero citations. Also require ≥2 overlapping query terms when the question has ≥2 content tokens (`MIN_OVERLAP_TERMS`).
 
-**Why:** Empirically separates seeded in-scope leave/expense questions from garbage queries in unit tests. Tunable in `src/lib/retrieve.ts`.
+**Why:** Empirically separates seeded in-scope leave/expense questions from garbage queries in unit tests. The overlap floor stops weak single-token hits (e.g. “week” matching “per week”). Tunable in `src/lib/retrieve.ts`.
 
 ## ADR-004: Runtime Citation Auditor
 

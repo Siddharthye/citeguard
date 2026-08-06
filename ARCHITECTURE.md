@@ -42,7 +42,7 @@ Storage uses an in-process singleton (`src/lib/store.ts`) backed by best-effort 
 
 1. Tokenize the question (stopword-aware).
 2. Score every chunk by query-term coverage + TF weight.
-3. If best score `< 0.18`, refuse with a fixed “I don’t know…” message and zero citations.
+3. If best score `< 0.18`, or fewer than 2 query terms overlap (when the question has ≥2 tokens), refuse with a fixed “I don’t know…” message and zero citations.
 4. Otherwise take top citations and:
    - **Extractive mode (default):** compose the answer from cited quotes (CI-safe, no API key).
    - **LLM mode (optional):** if `LLM_API_KEY` + `LLM_BASE_URL` are set, ask the model to answer *only* from numbered evidence passages.
