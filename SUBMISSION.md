@@ -27,5 +27,8 @@ https://github.com/Siddharthye/citeguard/actions
 ## 60-second judge path
 
 1. Open live demo → ask leave days → expect **18** + citations.  
-2. Ask something out of scope → expect refusal.  
-3. Repo: `.specify/` → `DECISIONS.md` → green Actions → `demos/`.
+2. Ask cafeteria pizza / out-of-scope → expect refusal.  
+3. Optional: upload two conflicting leave policies → conflict banner.  
+4. Repo: `.specify/` → `DECISIONS.md` → green Actions → `demos/`.
+
+**Note:** On Vercel, audit CSV may look empty across cold instances (serverless memory). Use local/`docker compose` for a guaranteed audit trail demo; the export endpoint itself is green in CI Playwright.
