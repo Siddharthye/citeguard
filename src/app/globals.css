@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
-/* CiteGuard — light blush UI (performance-first, phone-friendly) */
+/* CiteGuard — cool slate + teal (light, fast, phone-friendly) */
 :root {
-  --paper: #f7f3f1;
-  --paper-deep: #efe8e4;
-  --ink: #1a1614;
-  --ink-muted: #5c534e;
-  --ink-faint: #8a807a;
-  --rosy: #d3968c;
-  --rosy-deep: #b8786f;
-  --rosy-soft: rgba(211, 150, 140, 0.18);
-  --teal: #d3968c;
-  --teal-deep: #b8786f;
-  --accent: #d3968c;
-  --line: rgba(26, 22, 20, 0.1);
-  --line-strong: rgba(26, 22, 20, 0.16);
-  --warn: #b8786f;
-  --warn-soft: rgba(211, 150, 140, 0.2);
-  --glass: #fffbf9;
+  --paper: #f3f6f8;
+  --paper-deep: #e7eef2;
+  --ink: #0f1c24;
+  --ink-muted: #4a5d6a;
+  --ink-faint: #7a8d9a;
+  --rosy: #0f766e;
+  --rosy-deep: #0d5f59;
+  --rosy-soft: rgba(15, 118, 110, 0.16);
+  --teal: #0f766e;
+  --teal-deep: #0d5f59;
+  --accent: #0f766e;
+  --line: rgba(15, 28, 36, 0.1);
+  --line-strong: rgba(15, 28, 36, 0.16);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.12);
+  --glass: #ffffff;
   --glass-strong: #ffffff;
-  --glass-border: rgba(26, 22, 20, 0.08);
-  --shadow-soft: 0 4px 20px rgba(26, 22, 20, 0.05);
+  --glass-border: rgba(15, 28, 36, 0.08);
+  --shadow-soft: 0 4px 20px rgba(15, 28, 36, 0.05);
   --radius: 1.25rem;
   --radius-sm: 0.875rem;
-  --dark-green: #1a1614;
-  --moss: #d3968c;
-  --beige: #f7f3f1;
-  --midnight: #d3968c;
+  --dark-green: #0f1c24;
+  --moss: #0f766e;
+  --beige: #f3f6f8;
+  --midnight: #0f766e;
   --background: var(--paper);
   --foreground: var(--ink);
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -64,8 +64,9 @@ html {
 
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(211, 150, 140, 0.14) 0%, transparent 55%),
-    linear-gradient(180deg, #faf7f5 0%, var(--paper) 40%, var(--paper-deep) 100%);
+    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(15, 118, 110, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(14, 116, 144, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #f8fafb 0%, var(--paper) 40%, var(--paper-deep) 100%);
   background-attachment: scroll;
   color: var(--foreground);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
@@ -131,8 +132,8 @@ body {
 }
 
 .glass-inset:hover {
-  border-color: rgba(211, 150, 140, 0.45);
-  background: #fffaf8;
+  border-color: rgba(15, 118, 110, 0.4);
+  background: #f3faf9;
 }
 
 .field {
@@ -148,7 +149,7 @@ body {
 }
 
 .field:focus {
-  border-color: rgba(211, 150, 140, 0.7);
+  border-color: rgba(15, 118, 110, 0.65);
   box-shadow: 0 0 0 3px var(--rosy-soft);
 }
 
