@@ -19,7 +19,7 @@ https://github.com/Siddharthye/citeguard/actions
 ## Demo assets
 
 - Screenshots: [`demos/`](./demos/) (`01-home.png` … `05-audit-log.png`)
-- Walkthrough video (subtitled): [`demos/citeguard-demo.mp4`](./demos/citeguard-demo.mp4) · [`demos/citeguard-demo.webm`](./demos/citeguard-demo.webm)
+- Walkthrough video (subtitled): [`demos/citeguard-demo.mp4`](./demos/citeguard-demo.mp4)
 - Script: [`demos/README.md`](./demos/README.md)
 
 ## Gate checklist
