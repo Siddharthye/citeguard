@@ -3,7 +3,9 @@
 Repo: https://github.com/Siddharthye/citeguard  
 Live: https://citeguard-two.vercel.app  
 Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0  
-Video: `demos/citeguard-demo.webm`
+
+**Walkthrough video (subtitled, ~98s):** [`citeguard-demo.mp4`](./citeguard-demo.mp4)  
+Also: [`citeguard-demo.webm`](./citeguard-demo.webm)
 
 ## Screenshots (ready to submit)
 
