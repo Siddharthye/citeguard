@@ -39,8 +39,9 @@ test.describe("CiteGuard", () => {
   test("refuses an out-of-scope question", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByTestId("question-input").fill(
-      "What is the secret recipe for the company cafeteria pizza?",
+    await page.getByTestId("try-pizza").click();
+    await expect(page.getByTestId("question-input")).toHaveValue(
+      /cafeteria pizza topping/i,
     );
     await page.getByTestId("ask-button").click();
 

@@ -5,8 +5,16 @@
 **Repo:** https://github.com/Siddharthye/citeguard  
 **Live demo:** https://citeguard-two.vercel.app  
 **Latest release:** https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0  
-**CI:** GitHub Actions on `master` — latest runs **green**  
-https://github.com/Siddharthye/citeguard/actions
+**CI:** GitHub Actions on `master` — **green**  
+https://github.com/Siddharthye/citeguard/actions  
+**Playwright:** included in CI (`npm run test:e2e`)
+
+## Judge: try this
+
+1. Open https://citeguard-two.vercel.app  
+2. **Paid leave** → click **Paid leave days** → expect **18** + citations → open a citation (real source).  
+3. **Pizza refuse** → click **Cafeteria pizza (refuse)** → expect **I don't know** (no fake citations).  
+4. Repo skim: `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → green Actions → `demos/citeguard-demo.mp4`
 
 ## Demo assets
 
@@ -24,11 +32,6 @@ https://github.com/Siddharthye/citeguard/actions
 | Custom agent + skill | `agents/citation-auditor.md`, `skills/chunk-and-index/SKILL.md`, `AGENTS_AND_SKILLS.md` |
 | Green CI | `.github/workflows/ci.yml` |
 
-## 60-second judge path
+## Note
 
-1. Open live demo → ask leave days → expect **18** + citations.  
-2. Ask cafeteria pizza / out-of-scope → expect refusal.  
-3. Optional: upload two conflicting leave policies → conflict banner.  
-4. Repo: `.specify/` → `DECISIONS.md` → green Actions → `demos/`.
-
-**Note:** On Vercel, audit CSV may look empty across cold instances (serverless memory). Use local/`docker compose` for a guaranteed audit trail demo; the export endpoint itself is green in CI Playwright.
+On Vercel, audit CSV may look empty across cold instances (serverless memory). Use local/`docker compose` for a guaranteed audit trail; export itself is green in CI Playwright.

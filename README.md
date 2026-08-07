@@ -4,9 +4,16 @@
 
 Ask questions against uploaded policies. Get answers only when the documents support them — with the exact passage cited — or a clear refusal. A **runtime Citation Auditor** verifies every quote.
 
-**Live demo:** https://citeguard-two.vercel.app  
+## Judge: try this (60 seconds)
+
+**Live:** https://citeguard-two.vercel.app
+
+1. Click **Paid leave days** (or ask *How many days of paid annual leave do employees receive?*) → expect **18** + citations. Open a citation → real source text.
+2. Click **Cafeteria pizza (refuse)** (or ask *What is the cafeteria pizza topping?*) → **I don't know**. No fake policy. No fake citations.
+3. Optional: upload two conflicting leave policies → conflict banner. For a guaranteed audit CSV, use local/`docker compose` (Vercel instances don’t share memory).
+
 **Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.3.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0)  
-**Demos:** [`demos/`](demos/) screenshots + [`citeguard-demo.webm`](demos/citeguard-demo.webm) · Judge paste card: [`SUBMISSION.md`](SUBMISSION.md)
+**Demo video:** [`demos/citeguard-demo.mp4`](demos/citeguard-demo.mp4) · **Paste card:** [`SUBMISSION.md`](SUBMISSION.md)
 
 ## Clone → run in ~60 seconds
 
@@ -19,7 +26,7 @@ npm install
 npm run build && npm start
 ```
 
-Open **http://localhost:3000** — sample Acme policy is seeded. Ask: *How many days of paid annual leave do employees receive?*
+Open **http://localhost:3000** — sample Acme policy is seeded.
 
 ### Option B — Docker (one command)
 
@@ -71,11 +78,3 @@ Also: `ARCHITECTURE.md`, `DECISIONS.md`, `DAY2_PLAYBOOK.md`, `AGENTS.md`, `AGENT
 - `skills/chunk-and-index/SKILL.md`
 - `demos/` screenshots + walkthrough video
 - Releases: `v0.3.0`+
-
-## Demo tips
-
-1. Leave question → **18** + citations → click citation → source panel.
-2. Out-of-scope → **I don't know**.
-3. Upload two conflicting leave policies → **conflict banner**.
-4. PDF or txt upload → ask → Export CSV.
-5. Repo walk: `.specify/` → Decisions → green Actions.

@@ -5,6 +5,19 @@ type AskFormProps = {
   onSubmit: (event: React.FormEvent) => void;
 };
 
+const TRY_QUESTIONS = [
+  {
+    id: "leave",
+    label: "Paid leave days",
+    question: "How many days of paid annual leave do employees receive?",
+  },
+  {
+    id: "pizza",
+    label: "Cafeteria pizza (refuse)",
+    question: "What is the cafeteria pizza topping?",
+  },
+] as const;
+
 export function AskForm({
   question,
   busy,
@@ -30,6 +43,23 @@ export function AskForm({
         enterKeyHint="send"
         autoComplete="off"
       />
+      <div className="flex flex-wrap gap-2" data-testid="try-questions">
+        <span className="w-full text-xs text-[var(--ink-faint)] sm:w-auto sm:self-center">
+          Try:
+        </span>
+        {TRY_QUESTIONS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            data-testid={`try-${item.id}`}
+            disabled={busy}
+            onClick={() => onQuestionChange(item.question)}
+            className="btn-secondary px-3 py-1.5 text-sm"
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
       <button
         type="submit"
         data-testid="ask-button"
