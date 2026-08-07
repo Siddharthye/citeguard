@@ -201,7 +201,7 @@ export function CiteGuardApp({
           CiteGuard
         </p>
         <div className="brand-rule" aria-hidden />
-        <h1 className="max-w-xl text-base font-medium leading-relaxed text-[var(--ink-muted)] sm:text-2xl sm:leading-snug">
+        <h1 className="max-w-xl text-base font-medium leading-relaxed text-[var(--page-muted)] sm:text-2xl sm:leading-snug">
           Ask policy questions. Get answers only when the documents support them —
           with the exact passage attached.
         </h1>

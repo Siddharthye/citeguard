@@ -1,34 +1,36 @@
 @import "tailwindcss";
 
-/* CiteGuard — cool slate + teal (light, fast, phone-friendly) */
+/* CiteGuard — dark gradient stage + light panels */
 :root {
-  --paper: #f3f6f8;
-  --paper-deep: #e7eef2;
+  --paper: #0b1620;
+  --paper-deep: #061018;
   --ink: #0f1c24;
   --ink-muted: #4a5d6a;
   --ink-faint: #7a8d9a;
-  --rosy: #0f766e;
-  --rosy-deep: #0d5f59;
-  --rosy-soft: rgba(15, 118, 110, 0.16);
-  --teal: #0f766e;
-  --teal-deep: #0d5f59;
-  --accent: #0f766e;
+  --page-ink: #eef5f7;
+  --page-muted: #9db4c0;
+  --rosy: #14b8a6;
+  --rosy-deep: #0d9488;
+  --rosy-soft: rgba(20, 184, 166, 0.2);
+  --teal: #14b8a6;
+  --teal-deep: #0d9488;
+  --accent: #14b8a6;
   --line: rgba(15, 28, 36, 0.1);
   --line-strong: rgba(15, 28, 36, 0.16);
-  --warn: #b45309;
-  --warn-soft: rgba(180, 83, 9, 0.12);
+  --warn: #f59e0b;
+  --warn-soft: rgba(245, 158, 11, 0.14);
   --glass: #ffffff;
   --glass-strong: #ffffff;
-  --glass-border: rgba(15, 28, 36, 0.08);
-  --shadow-soft: 0 4px 20px rgba(15, 28, 36, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.28);
   --radius: 1.25rem;
   --radius-sm: 0.875rem;
   --dark-green: #0f1c24;
-  --moss: #0f766e;
-  --beige: #f3f6f8;
-  --midnight: #0f766e;
+  --moss: #14b8a6;
+  --beige: #0b1620;
+  --midnight: #14b8a6;
   --background: var(--paper);
-  --foreground: var(--ink);
+  --foreground: var(--page-ink);
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -63,10 +65,12 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(15, 118, 110, 0.1) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(14, 116, 144, 0.08) 0%, transparent 50%),
-    linear-gradient(180deg, #f8fafb 0%, var(--paper) 40%, var(--paper-deep) 100%);
+  background-color: #061018;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 10% -10%, rgba(20, 184, 166, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(14, 116, 144, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(15, 118, 110, 0.18) 0%, transparent 55%),
+    linear-gradient(165deg, #0f2430 0%, #0b1620 42%, #061018 100%);
   background-attachment: scroll;
   color: var(--foreground);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
@@ -86,7 +90,7 @@ body {
 }
 
 .brand-mark {
-  color: var(--ink);
+  color: var(--page-ink);
   line-height: 0.95;
 }
 
@@ -221,7 +225,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--rosy-deep);
+  color: var(--rosy);
 }
 
 .break-safe {
