@@ -21,7 +21,7 @@ https://github.com/Siddharthye/citeguard/actions
 
 ## Demo assets
 
-- Screenshots: [`demos/`](./demos/) (`01-home.png` … `05-audit-log.png`)
+- Screenshots: [`demos/`](./demos/) (`01-home.png` … `06-day2-supersession.png`)
 - Walkthrough video (subtitled): [`demos/citeguard-demo.mp4`](./demos/citeguard-demo.mp4)
 - Script: [`demos/README.md`](./demos/README.md)
 

@@ -67,5 +67,15 @@ test.describe("CiteGuard demo recording", () => {
       path: path.join(DEMO_DIR, "05-audit-log.png"),
       fullPage: true,
     });
+
+    await page.getByTestId("try-day2-supersession").click();
+    await expect(page.getByTestId("answer-text")).toContainText(/22/i, {
+      timeout: 20_000,
+    });
+    await expect(page.getByTestId("superseded-banner")).toBeVisible();
+    await page.screenshot({
+      path: path.join(DEMO_DIR, "06-day2-supersession.png"),
+      fullPage: true,
+    });
   });
 });

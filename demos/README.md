@@ -2,7 +2,7 @@
 
 Repo: https://github.com/Siddharthye/citeguard  
 Live: https://citeguard-two.vercel.app  
-Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0  
+Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0  
 
 **Walkthrough video (subtitled, ~98s):** [`citeguard-demo.mp4`](./citeguard-demo.mp4)
 
@@ -15,6 +15,7 @@ Saved under `demos/`:
 3. `03-refusal.png` — out-of-scope question refused  
 4. `04-upload-and-ask.png` — new policy uploaded and answered  
 5. `05-audit-log.png` — audit trail  
+6. `06-day2-supersession.png` — Day 2: current leave = **22**, superseded banner + badges  
 
 ## Live walkthrough script
 
@@ -27,9 +28,10 @@ Open http://localhost:3000 and narrate:
 1. **Problem** — people ask LLMs about policies and get invented answers.  
 2. **Ask** — “How many days of paid annual leave do employees receive?” → show **18** + quote.  
 3. **Refuse** — ask something not in the docs → “I don’t know”.  
-4. **Upload** — paste a short travel policy → ask about business class → citation from new doc.  
-5. **Audit / export** — scroll audit log → click **Export CSV**.  
-6. **ADLC** — open GitHub: `ARCHITECTURE.md`, `AGENTS.md`, `AGENTS_AND_SKILLS.md`, green Actions, `v0.3.0`.
+4. **Day 2** — click **Day 2: superseded policies** → **22** (not 12), citations from 2024, superseded banner + badges.  
+5. **Upload** — paste a short travel policy → ask about business class → citation from new doc.  
+6. **Audit / export** — scroll audit log → click **Export CSV**.  
+7. **ADLC** — open GitHub: `CODEMAP.md`, `ARCHITECTURE.md`, `AGENTS.md`, green Actions, `v0.4.0`.
 
 ## Re-record
 
