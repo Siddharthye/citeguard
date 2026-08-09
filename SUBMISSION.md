@@ -14,7 +14,9 @@ https://github.com/Siddharthye/citeguard/actions
 1. Open https://citeguard-two.vercel.app  
 2. **Paid leave** → click **Paid leave days** → expect **18** + citations → open a citation (real source).  
 3. **Pizza refuse** → click **Cafeteria pizza (refuse)** → expect **I don't know** (no fake citations).  
-4. Repo skim: `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → green Actions → `demos/citeguard-demo.mp4`
+4. **Day 2 — superseded policies:** upload old + new leave policy with the **same policy family** and different **effective dates** (e.g. 12 days / 2020 vs 22 days / 2024) → ask leave days → expect **22**, citations from the new doc, and an explicit **superseded** note for the old one.  
+5. Repo skim: `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → green Actions → `demos/citeguard-demo.mp4`
+
 
 ## Demo assets
 
