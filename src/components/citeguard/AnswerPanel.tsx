@@ -5,14 +5,25 @@ type AnswerPanelProps = {
   onOpenCitation: (citation: Citation) => void;
 };
 
+function uniqueSourceNames(citations: Citation[]): string {
+  return [...new Set(citations.map((citation) => citation.documentName))].join(
+    " · ",
+  );
+}
+
 export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
   return (
-    <div
-      className="glass space-y-4 p-4 sm:p-7"
-      data-testid="answer-panel"
-    >
+    <div className="glass space-y-4 p-4 sm:p-7" data-testid="answer-panel">
       <p className="label-caps">Answer</p>
-      {result ? (
+
+      {!result && (
+        <p className="text-sm leading-relaxed text-[var(--ink-faint)] sm:text-base">
+          Answers appear here with source quotes. Out-of-scope questions are
+          refused.
+        </p>
+      )}
+
+      {result && (
         <div
           key={`${result.refused}-${result.answer.slice(0, 48)}`}
           className={`space-y-4 border-l-[3px] pl-3 sm:pl-4 ${
@@ -35,12 +46,17 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
               <p className="font-semibold text-[var(--ink)]">
                 Superseded policy excluded
               </p>
-              <ul className="mt-1 space-y-1 break-safe text-[var(--ink-muted)]">
+              <ul className="mt-2 space-y-2 break-safe text-[var(--ink-muted)]">
                 {result.superseded.map((item) => (
                   <li key={`${item.name}-${item.effectiveDate}`}>
-                    {item.name} (effective {item.effectiveDate}) is superseded by{" "}
-                    {item.supersededByName} (effective{" "}
-                    {item.supersededByEffectiveDate}).
+                    <span className="font-medium text-[var(--ink)]">
+                      {item.name}
+                    </span>{" "}
+                    (effective {item.effectiveDate}) is superseded by{" "}
+                    <span className="font-medium text-[var(--ink)]">
+                      {item.supersededByName}
+                    </span>{" "}
+                    (effective {item.supersededByEffectiveDate}).
                   </li>
                 ))}
               </ul>
@@ -56,14 +72,9 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
               <p className="font-semibold text-[var(--warn)]">
                 Multiple sources disagree — see both
               </p>
-              <p className="mt-1 break-safe text-[var(--ink-muted)]">
-                Citations span{" "}
-                {[
-                  ...new Set(
-                    result.citations.map((citation) => citation.documentName),
-                  ),
-                ].join(" · ")}
-                . Compare quotes before treating any single figure as policy.
+              <p className="mt-1 break-safe leading-relaxed text-[var(--ink-muted)]">
+                Citations span {uniqueSourceNames(result.citations)}. Compare
+                quotes before treating any single figure as policy.
               </p>
             </div>
           )}
@@ -79,7 +90,10 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
           </p>
 
           {result.auditIssues.length > 0 && (
-            <ul className="break-safe text-xs text-[var(--warn)]" data-testid="audit-issues">
+            <ul
+              className="break-safe space-y-1 text-xs text-[var(--warn)]"
+              data-testid="audit-issues"
+            >
               {result.auditIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
@@ -94,12 +108,12 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
                     type="button"
                     data-testid="citation-button"
                     onClick={() => onOpenCitation(citation)}
-                    className="glass-inset min-h-11 w-full p-3.5 text-left text-sm leading-relaxed text-[var(--ink-muted)]"
+                    className="glass-inset min-h-11 w-full touch-manipulation p-3.5 text-left text-sm leading-relaxed text-[var(--ink-muted)]"
                   >
                     <span className="break-safe font-semibold text-[var(--ink)]">
                       {citation.documentName}
                     </span>
-                    <span className="block text-[var(--ink-faint)] sm:inline">
+                    <span className="mt-1 block text-xs text-[var(--ink-faint)] sm:mt-0 sm:inline sm:text-sm">
                       {" "}
                       · chunk {citation.chunkIndex + 1} · score{" "}
                       {citation.score.toFixed(2)} · view source
@@ -113,11 +127,6 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
             </ul>
           )}
         </div>
-      ) : (
-        <p className="text-sm text-[var(--ink-faint)] sm:text-base">
-          Answers appear here with source quotes. Out-of-scope questions are
-          refused.
-        </p>
       )}
     </div>
   );

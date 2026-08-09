@@ -244,14 +244,14 @@ export function CiteGuardApp({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:gap-12 sm:px-8 sm:py-16">
-      <header className="space-y-4 sm:space-y-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6 sm:gap-12 sm:px-8 sm:py-16">
+      <header className="space-y-3 sm:space-y-6">
         <p className="label-caps">scodes · Track C</p>
-        <p className="brand-mark font-display text-[2.75rem] font-semibold tracking-tight sm:text-6xl md:text-8xl">
+        <p className="brand-mark font-display text-[2.35rem] font-semibold tracking-tight sm:text-6xl md:text-8xl">
           CiteGuard
         </p>
         <div className="brand-rule" aria-hidden />
-        <h1 className="max-w-xl text-base font-medium leading-relaxed text-[var(--page-muted)] sm:text-2xl sm:leading-snug">
+        <h1 className="max-w-xl text-[0.95rem] font-medium leading-relaxed text-[var(--page-muted)] sm:text-2xl sm:leading-snug">
           Ask policy questions. Get answers only when the documents support them —
           with the exact passage attached.
         </h1>

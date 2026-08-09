@@ -18,6 +18,16 @@ export const REFUSAL =
 export const SUPERSEDED_REFUSAL =
   "I won't cite a superseded policy version. Upload or select the currently effective document, or ask again after the current version is available.";
 
+function formatSupersededNotes(superseded: SupersededPolicyNote[]): string {
+  return superseded
+    .map(
+      (item) =>
+        `- ${item.name} (effective ${item.effectiveDate}) is superseded by ` +
+        `${item.supersededByName} (effective ${item.supersededByEffectiveDate})`,
+    )
+    .join("\n");
+}
+
 function buildExtractiveAnswer(
   citations: Citation[],
   superseded: SupersededPolicyNote[],
@@ -34,16 +44,7 @@ function buildExtractiveAnswer(
   }
 
   if (superseded.length === 0) return base;
-
-  const notes = superseded
-    .map(
-      (item) =>
-        `- ${item.name} (effective ${item.effectiveDate}) is superseded by ` +
-        `${item.supersededByName} (effective ${item.supersededByEffectiveDate})`,
-    )
-    .join("\n");
-
-  return `${base}\n\nSuperseded versions (not used as valid citations):\n${notes}`;
+  return `${base}\n\nSuperseded versions (not used as valid citations):\n${formatSupersededNotes(superseded)}`;
 }
 
 function detectMultiSource(citations: Citation[]): boolean {
@@ -201,13 +202,7 @@ export async function answerQuestion(
 
     const withNote =
       superseded.length > 0
-        ? `${llmAnswer}\n\nSuperseded versions (not used as valid citations):\n${superseded
-            .map(
-              (item) =>
-                `- ${item.name} (effective ${item.effectiveDate}) is superseded by ` +
-                `${item.supersededByName} (effective ${item.supersededByEffectiveDate})`,
-            )
-            .join("\n")}`
+        ? `${llmAnswer}\n\nSuperseded versions (not used as valid citations):\n${formatSupersededNotes(superseded)}`
         : llmAnswer;
 
     return groundedResult(withNote, citations, "llm", documents, superseded);
