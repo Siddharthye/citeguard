@@ -154,30 +154,17 @@ export function CiteGuardApp({
           (seedData as { error?: string }).error ?? "Day 2 demo seed failed",
         );
       }
-      await refresh();
       const nextQuestion =
         (seedData as { question?: string }).question ??
         "How many days of paid annual leave do employees receive?";
       setQuestion(nextQuestion);
-
-      const askRes = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: nextQuestion }),
-        cache: "no-store",
-      });
-      const askData = await askRes.json().catch(() => ({}));
-      if (!askRes.ok) {
-        throw new Error(
-          (askData as { error?: string }).error ??
-            `Ask failed (HTTP ${askRes.status})`,
-        );
+      if ((seedData as { result?: AskResult }).result) {
+        setResult((seedData as { result: AskResult }).result);
       }
-      setResult(askData as AskResult);
       try {
         await refresh();
       } catch {
-        // best-effort on serverless
+        // best-effort on serverless — answer already set from same-instance seed
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Day 2 demo failed");

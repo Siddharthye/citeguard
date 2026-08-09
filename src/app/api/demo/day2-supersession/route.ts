@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { addDocument, listDocuments } from "@/lib/store";
+import { answerQuestion } from "@/lib/answer";
+import { addDocument, getChunks, listDocuments } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,8 +12,8 @@ const QUESTION =
   "How many days of paid annual leave do employees receive?";
 
 /**
- * Seeds an old (12 days / 2020) and current (22 days / 2024) leave policy
- * in the same family for the Day 2 supersession demo.
+ * Seeds old (12d/2020) + current (22d/2024) leave policies and answers
+ * on the **same** serverless instance (avoids Vercel memory split).
  */
 export async function POST() {
   addDocument(
@@ -36,9 +37,17 @@ export async function POST() {
     },
   );
 
+  const docs = listDocuments().filter(
+    (doc) => doc.policyFamily === FAMILY || doc.id === OLD_ID || doc.id === NEW_ID,
+  );
+  const docIds = new Set(docs.map((doc) => doc.id));
+  const chunks = getChunks().filter((chunk) => docIds.has(chunk.documentId));
+  const result = await answerQuestion(QUESTION, chunks, docs);
+
   return NextResponse.json({
     ok: true,
     question: QUESTION,
+    result,
     documents: listDocuments()
       .filter((doc) => doc.id === OLD_ID || doc.id === NEW_ID)
       .map(({ id, name, effectiveDate, version, policyFamily }) => ({
