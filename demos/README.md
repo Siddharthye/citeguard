@@ -6,6 +6,9 @@ Release: https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0
 
 **Walkthrough video (subtitled, ~98s):** [`citeguard-demo.mp4`](./citeguard-demo.mp4)
 
+**Panel pack:** [`CiteGuard-Panel-Day2.pptx`](./CiteGuard-Panel-Day2.pptx) · [`CiteGuard-Panel-QA.pdf`](./CiteGuard-Panel-QA.pdf) · [`CiteGuard-Simple-Walkthrough.pdf`](./CiteGuard-Simple-Walkthrough.pdf)  
+(Canonical copies also under `specs/` as `CiteGuard-Panel-Day2-v2.pptx` + the same PDFs.)
+
 ## Screenshots (ready to submit)
 
 Saved under `demos/`:

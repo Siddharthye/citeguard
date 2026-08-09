@@ -17,7 +17,11 @@ export function SourcePanel({ source, onClose }: SourcePanelProps) {
         <h2 className="font-display break-safe text-xl text-[var(--ink)] sm:text-3xl">
           Source: {source.name}
         </h2>
-        <button type="button" className="btn-secondary w-full sm:w-auto" onClick={onClose}>
+        <button
+          type="button"
+          className="btn-secondary min-h-11 w-full touch-manipulation sm:w-auto"
+          onClick={onClose}
+        >
           Close
         </button>
       </div>

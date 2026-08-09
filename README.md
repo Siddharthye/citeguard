@@ -16,7 +16,8 @@ Ask questions against uploaded policies. Get answers only when the documents sup
 4. Optional: upload two conflicting leave policies → conflict banner. For a guaranteed audit CSV, use local/`docker compose` (Vercel instances don’t share memory).
 
 **Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.4.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0)  
-**Demo video:** [`demos/citeguard-demo.mp4`](demos/citeguard-demo.mp4) · **Paste card:** [`SUBMISSION.md`](SUBMISSION.md)
+**Demo video:** [`demos/citeguard-demo.mp4`](demos/citeguard-demo.mp4) · **Paste card:** [`SUBMISSION.md`](SUBMISSION.md)  
+**Panel:** [`specs/CiteGuard-Panel-Day2-v2.pptx`](specs/CiteGuard-Panel-Day2-v2.pptx) · **Q&A PDF:** [`specs/CiteGuard-Panel-QA.pdf`](specs/CiteGuard-Panel-QA.pdf) · **Simple walk:** [`specs/CiteGuard-Simple-Walkthrough.pdf`](specs/CiteGuard-Simple-Walkthrough.pdf)
 
 ## Clone → run in ~60 seconds
 

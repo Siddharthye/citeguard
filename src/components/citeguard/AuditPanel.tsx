@@ -17,7 +17,7 @@ export function AuditPanel({ audit }: AuditPanelProps) {
         <a
           href="/api/audit?format=csv"
           data-testid="export-audit"
-          className="btn-secondary w-full text-center sm:w-auto"
+          className="btn-secondary min-h-11 w-full touch-manipulation text-center sm:w-auto"
         >
           Export CSV
         </a>

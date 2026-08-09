@@ -1,21 +1,21 @@
-# Panel deck (5 slides) — Day 2 finalists
+# Panel deck (10 slides) — Day 2 finalists
 
-Keep slides sparse; walk the repo live. Live: https://citeguard-two.vercel.app
+**File:** [`CiteGuard-Panel-Day2-v2.pptx`](./CiteGuard-Panel-Day2-v2.pptx)  
+**Printables:** [`CiteGuard-Panel-QA.pdf`](./CiteGuard-Panel-QA.pdf) · [`CiteGuard-Simple-Walkthrough.pdf`](./CiteGuard-Simple-Walkthrough.pdf)  
+(If PowerPoint still has an older file open, use **-v2**.)  
+Live: https://citeguard-two.vercel.app · Release: `v0.4.0`
 
-## 1. Problem
-People ask LLMs about policies → invented answers, no paper trail, no currency check.
+| # | Slide | Say |
+| --- | --- | --- |
+| 1 | Title | Cite or refuse. Current version only. |
+| 2 | Problem | Invented answers / no trail / stale versions |
+| 3 | Product | Retrieve → cite/refuse → audit → log |
+| 4 | Day 2 | 12 superseded → 22 current; ADR-007 |
+| 5 | Architecture | CODEMAP modules table |
+| 6 | ADLC / agents | Constitution, auditor, skill, CI |
+| 7 | vs ChatGPT | Grounding, citations, refusal, currency, audit |
+| 8 | Verification | Live, Docker, CI, unit + Playwright |
+| 9 | Trade-offs | Keyword retrieval, extractive default, additive twist |
+| 10 | Live path | Demo buttons + repo walk order |
 
-## 2. Approach
-CiteGuard: retrieve → **cite or refuse** → runtime Citation Auditor.  
-Track C · Knowledge & Compliance. Faithfulness **and** currency.
-
-## 3. Architecture
-Next.js · chunk/retrieve · extractive (+ optional LLM) · `policy-version.ts` · auditor in `faithfulness.ts` · audit CSV.  
-Point at `ARCHITECTURE.md`.
-
-## 4. What ADLC gave us
-Constitution (`AGENTS.md`) · Citation Auditor agent → executable tests · chunk-and-index skill · Spec Kit + `DECISIONS.md` · green CI.
-
-## 5. Trade-offs & Day 2 twist
-Keyword retrieval for CI determinism (ADR-001).  
-**Day 2:** superseded policies — same `policyFamily`, different `effectiveDate` → cite only the current version; name the old one as superseded (ADR-007). Additive module, not a rewrite (`DAY2_PLAYBOOK.md`).
+Walk script: `PANEL_WALK.md`

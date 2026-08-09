@@ -1,5 +1,7 @@
 # Panel walk script (~90 seconds live + repo)
 
+**Printables:** [`CiteGuard-Simple-Walkthrough.pdf`](./CiteGuard-Simple-Walkthrough.pdf) (plain language) · [`CiteGuard-Panel-QA.pdf`](./CiteGuard-Panel-QA.pdf) (judge Q&A bank) · Deck: [`CiteGuard-Panel-Day2-v2.pptx`](./CiteGuard-Panel-Day2-v2.pptx)
+
 ## Live demo (90 seconds)
 
 1. Open https://citeguard-two.vercel.app  
@@ -26,6 +28,8 @@
 | Release | `v0.4.0` |
 
 ## Q&A cheats
+
+Full bank: `CiteGuard-Panel-QA.pdf`
 
 - **Conflict vs supersession?** Different families can multi-source conflict; same family → only current is valid.  
 - **Why not rewrite?** Extract → retrieve → answer → audit stayed; twist is additive.  

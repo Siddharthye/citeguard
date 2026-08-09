@@ -90,7 +90,7 @@ export function SourcesPanel({
         value={uploadName}
         onChange={(event) => onUploadNameChange(event.target.value)}
         placeholder="Document name"
-        className="field min-h-11 px-3.5 py-3 placeholder:text-[var(--ink-faint)]"
+        className="field min-h-11 px-3.5 py-3 text-base placeholder:text-[var(--ink-faint)]"
         autoComplete="off"
       />
 

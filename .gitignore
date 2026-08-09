@@ -29,6 +29,11 @@
 .DS_Store
 *.pem
 /IMG_1657*
+/tmp/
+/outputs/
+**/~$*.pptx
+**/~$*.docx
+**/~$*.xlsx
 
 # debug
 npm-debug.log*
