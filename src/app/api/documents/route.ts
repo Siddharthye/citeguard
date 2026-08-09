@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { extractTextFromUpload } from "@/lib/extract";
+import { resolveCurrency } from "@/lib/policy-version";
 import {
   addDocument,
   deleteDocument,
@@ -24,7 +25,9 @@ const uploadSchema = z.object({
 });
 
 function listProjection() {
-  return listDocuments().map(
+  const documents = listDocuments();
+  const currency = resolveCurrency(documents);
+  return documents.map(
     ({ id, name, uploadedAt, effectiveDate, version, policyFamily }) => ({
       id,
       name,
@@ -32,6 +35,10 @@ function listProjection() {
       effectiveDate,
       version,
       policyFamily,
+      currencyStatus: currency.currentIds.has(id)
+        ? ("current" as const)
+        : ("superseded" as const),
+      supersededByName: currency.supersededBy.get(id)?.name,
     }),
   );
 }

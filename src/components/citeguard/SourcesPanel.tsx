@@ -126,13 +126,37 @@ export function SourcesPanel({
       </button>
 
       <ul className="space-y-2 pt-1" data-testid="document-list">
-        {documents.map((doc) => (
+        {documents.map((doc) => {
+          const familyHasSupersession = documents.some(
+            (other) =>
+              other.policyFamily === doc.policyFamily &&
+              other.currencyStatus === "superseded",
+          );
+          return (
           <li
             key={doc.id}
             className="glass-inset flex flex-col gap-1 px-3.5 py-3 text-sm text-[var(--ink-muted)] sm:gap-1.5"
           >
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-              <span className="break-safe font-medium text-[var(--ink)]">{doc.name}</span>
+              <span className="break-safe font-medium text-[var(--ink)]">
+                {doc.name}
+                {doc.currencyStatus === "superseded" && (
+                  <span
+                    data-testid="badge-superseded"
+                    className="ml-2 inline-block rounded-md bg-[var(--warn-soft)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--warn)]"
+                  >
+                    superseded
+                  </span>
+                )}
+                {doc.currencyStatus === "current" && familyHasSupersession && (
+                  <span
+                    data-testid="badge-current"
+                    className="ml-2 inline-block rounded-md bg-black/[0.06] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]"
+                  >
+                    current
+                  </span>
+                )}
+              </span>
               <time className="shrink-0 text-xs text-[var(--ink-faint)]">
                 uploaded {new Date(doc.uploadedAt).toLocaleString()}
               </time>
@@ -141,9 +165,13 @@ export function SourcesPanel({
               effective {doc.effectiveDate}
               {doc.version ? ` · v${doc.version}` : ""}
               {doc.policyFamily ? ` · family ${doc.policyFamily}` : ""}
+              {doc.supersededByName
+                ? ` · replaced by ${doc.supersededByName}`
+                : ""}
             </p>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </form>
   );

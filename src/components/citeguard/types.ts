@@ -8,6 +8,8 @@ export type DocumentSummary = {
   effectiveDate: string;
   version?: string;
   policyFamily: string;
+  currencyStatus?: "current" | "superseded";
+  supersededByName?: string;
 };
 
 export type SourceView = {

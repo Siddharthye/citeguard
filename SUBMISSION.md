@@ -4,7 +4,7 @@
 **Product:** CiteGuard  
 **Repo:** https://github.com/Siddharthye/citeguard  
 **Live demo:** https://citeguard-two.vercel.app  
-**Latest release:** https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0  
+**Latest release:** https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0  
 **CI:** GitHub Actions on `master` — **green**  
 https://github.com/Siddharthye/citeguard/actions  
 **Playwright:** included in CI (`npm run test:e2e`)
@@ -14,8 +14,9 @@ https://github.com/Siddharthye/citeguard/actions
 1. Open https://citeguard-two.vercel.app  
 2. **Paid leave** → click **Paid leave days** → expect **18** + citations → open a citation (real source).  
 3. **Pizza refuse** → click **Cafeteria pizza (refuse)** → expect **I don't know** (no fake citations).  
-4. **Day 2 — superseded policies:** upload old + new leave policy with the **same policy family** and different **effective dates** (e.g. 12 days / 2020 vs 22 days / 2024) → ask leave days → expect **22**, citations from the new doc, and an explicit **superseded** note for the old one.  
-5. Repo skim: `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → green Actions → `demos/citeguard-demo.mp4`
+4. **Day 2 — superseded policies:** click **Day 2: superseded policies** (or upload old + new leave policy with the same family / different effective dates) → expect **22**, citations from the new doc, **superseded** banner + badges, old version named explicitly.  
+5. Repo skim: `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → `specs/PANEL_WALK.md` → green Actions → `demos/citeguard-demo.mp4`  
+6. Panel: `specs/PANEL_DECK.md` + `specs/PANEL_WALK.md` · Release: `v0.4.0`
 
 
 ## Demo assets

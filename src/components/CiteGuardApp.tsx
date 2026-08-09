@@ -138,6 +138,54 @@ export function CiteGuardApp({
     setSourceView(null);
   }
 
+  async function onLoadDay2Demo() {
+    setBusy(true);
+    setError(null);
+    setSourceView(null);
+    setResult(null);
+    try {
+      const seedRes = await fetch("/api/demo/day2-supersession", {
+        method: "POST",
+        cache: "no-store",
+      });
+      const seedData = await seedRes.json().catch(() => ({}));
+      if (!seedRes.ok) {
+        throw new Error(
+          (seedData as { error?: string }).error ?? "Day 2 demo seed failed",
+        );
+      }
+      await refresh();
+      const nextQuestion =
+        (seedData as { question?: string }).question ??
+        "How many days of paid annual leave do employees receive?";
+      setQuestion(nextQuestion);
+
+      const askRes = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: nextQuestion }),
+        cache: "no-store",
+      });
+      const askData = await askRes.json().catch(() => ({}));
+      if (!askRes.ok) {
+        throw new Error(
+          (askData as { error?: string }).error ??
+            `Ask failed (HTTP ${askRes.status})`,
+        );
+      }
+      setResult(askData as AskResult);
+      try {
+        await refresh();
+      } catch {
+        // best-effort on serverless
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Day 2 demo failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onUpload(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -228,6 +276,7 @@ export function CiteGuardApp({
           busy={busy}
           onQuestionChange={onQuestionChange}
           onSubmit={(event) => void onAsk(event)}
+          onLoadDay2Demo={() => void onLoadDay2Demo()}
         />
         <AnswerPanel
           result={result}

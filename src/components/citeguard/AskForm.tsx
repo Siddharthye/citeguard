@@ -3,6 +3,7 @@ type AskFormProps = {
   busy: boolean;
   onQuestionChange: (value: string) => void;
   onSubmit: (event: React.FormEvent) => void;
+  onLoadDay2Demo?: () => void | Promise<void>;
 };
 
 const TRY_QUESTIONS = [
@@ -23,6 +24,7 @@ export function AskForm({
   busy,
   onQuestionChange,
   onSubmit,
+  onLoadDay2Demo,
 }: AskFormProps) {
   return (
     <form
@@ -59,6 +61,17 @@ export function AskForm({
             {item.label}
           </button>
         ))}
+        {onLoadDay2Demo && (
+          <button
+            type="button"
+            data-testid="try-day2-supersession"
+            disabled={busy}
+            onClick={() => void onLoadDay2Demo()}
+            className="btn-secondary px-3 py-1.5 text-sm"
+          >
+            Day 2: superseded policies
+          </button>
+        )}
       </div>
       <button
         type="submit"

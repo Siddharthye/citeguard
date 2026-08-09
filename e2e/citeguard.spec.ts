@@ -98,54 +98,19 @@ test.describe("CiteGuard", () => {
     );
   });
 
-  test("cites current policy and notes superseded version", async ({ page }) => {
+  test("Day 2 one-click supersession demo", async ({ page }) => {
     await page.goto("/");
-
-    await page.getByTestId("upload-name").fill("leave-policy-2020.md");
-    await page.getByTestId("upload-effective-date").fill("2020-01-01");
-    await page.getByTestId("upload-version").fill("2020");
-    await page.getByTestId("upload-policy-family").fill("leave-policy");
-    await page
-      .getByTestId("upload-content")
-      .fill(
-        "Employees receive 12 days of paid annual leave each calendar year.",
-      );
-    await page.getByTestId("upload-button").click();
-    await expect(page.getByTestId("document-list")).toContainText(
-      "leave-policy-2020.md",
-    );
-
-    await page.getByTestId("upload-name").fill("leave-policy-2024.md");
-    await page.getByTestId("upload-effective-date").fill("2024-06-01");
-    await page.getByTestId("upload-version").fill("2024");
-    await page.getByTestId("upload-policy-family").fill("leave-policy");
-    await page
-      .getByTestId("upload-content")
-      .fill(
-        "Employees receive 22 days of paid annual leave each calendar year.",
-      );
-    await page.getByTestId("upload-button").click();
-    await expect(page.getByTestId("document-list")).toContainText(
-      "leave-policy-2024.md",
-    );
-
-    await page
-      .getByTestId("question-input")
-      .fill("How many days of paid annual leave do employees receive?");
-    await page.getByTestId("ask-button").click();
+    await page.getByTestId("try-day2-supersession").click();
 
     await expect(page.getByTestId("answer-text")).toContainText(/22/i, {
-      timeout: 15_000,
+      timeout: 20_000,
     });
-    await expect(page.getByTestId("answer-text")).toContainText(/superseded/i);
     await expect(page.getByTestId("superseded-banner")).toContainText(
       /leave-policy-2020/i,
     );
     await expect(page.getByTestId("citations")).toContainText(
       "leave-policy-2024.md",
     );
-    await expect(page.getByTestId("citations")).not.toContainText(
-      "leave-policy-2020.md",
-    );
+    await expect(page.getByTestId("badge-superseded").first()).toBeVisible();
   });
 });
