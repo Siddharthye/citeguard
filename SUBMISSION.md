@@ -16,7 +16,7 @@ https://github.com/Siddharthye/citeguard/actions
 3. **Pizza refuse** → click **Cafeteria pizza (refuse)** → expect **I don't know** (no fake citations).  
 4. **Day 2 — superseded policies:** click **Day 2: superseded policies** (or upload old + new leave policy with the same family / different effective dates) → expect **22**, citations from the new doc, **superseded** banner + badges, old version named explicitly.  
 5. Repo skim: `CODEMAP.md` → `ARCHITECTURE.md` → `AGENTS_AND_SKILLS.md` → green Actions → `demos/citeguard-demo.mp4`  
-6. Panel: [`specs/CiteGuard-Panel-Day2-v2.pptx`](./specs/CiteGuard-Panel-Day2-v2.pptx) · Q&A [`CiteGuard-Panel-QA.pdf`](./specs/CiteGuard-Panel-QA.pdf) · simple walk [`CiteGuard-Simple-Walkthrough.pdf`](./specs/CiteGuard-Simple-Walkthrough.pdf) · Release: `v0.4.0`
+6. Panel: [`specs/CiteGuard-Panel-Day2-v2.pptx`](./specs/CiteGuard-Panel-Day2-v2.pptx) · Q&A [`CiteGuard-Panel-QA-v2.pdf`](./specs/CiteGuard-Panel-QA-v2.pdf) · simple walk [`CiteGuard-Simple-Walkthrough-v2.pdf`](./specs/CiteGuard-Simple-Walkthrough-v2.pdf) · Release: `v0.4.0`
 
 
 ## Demo assets

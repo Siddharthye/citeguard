@@ -1,7 +1,7 @@
 # Panel deck (10 slides) — Day 2 finalists
 
 **File:** [`CiteGuard-Panel-Day2-v2.pptx`](./CiteGuard-Panel-Day2-v2.pptx)  
-**Printables:** [`CiteGuard-Panel-QA.pdf`](./CiteGuard-Panel-QA.pdf) · [`CiteGuard-Simple-Walkthrough.pdf`](./CiteGuard-Simple-Walkthrough.pdf)  
+**Printables:** [`CiteGuard-Panel-QA-v2.pdf`](./CiteGuard-Panel-QA-v2.pdf) · [`CiteGuard-Simple-Walkthrough-v2.pdf`](./CiteGuard-Simple-Walkthrough-v2.pdf)  
 (If PowerPoint still has an older file open, use **-v2**.)  
 Live: https://citeguard-two.vercel.app · Release: `v0.4.0`
 
