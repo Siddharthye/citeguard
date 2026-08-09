@@ -1,4 +1,5 @@
 import type { Citation, DocumentRecord } from "./types";
+import { resolveCurrency } from "./policy-version";
 
 export type FaithfulnessReport = {
   faithful: boolean;
@@ -72,6 +73,39 @@ export function auditNumericGrounding(
   return { faithful: issues.length === 0, issues };
 }
 
+/**
+ * Currency rule: citations must come from the currently effective policy version.
+ * Superseded/expired versions are not valid grounding.
+ */
+export function auditCitationCurrency(
+  citations: Citation[],
+  documents: DocumentRecord[],
+  asOf?: string,
+): FaithfulnessReport {
+  const currency = resolveCurrency(documents, asOf);
+  const byId = new Map(documents.map((doc) => [doc.id, doc]));
+  const issues: string[] = [];
+
+  for (const citation of citations) {
+    if (currency.currentIds.has(citation.documentId)) continue;
+    const current = currency.supersededBy.get(citation.documentId);
+    const doc = byId.get(citation.documentId);
+    if (current) {
+      issues.push(
+        `Superseded policy cited: ${doc?.name ?? citation.documentName} ` +
+          `(effective ${doc?.effectiveDate ?? "?"}) — current is ${current.name} ` +
+          `(effective ${current.effectiveDate})`,
+      );
+    } else {
+      issues.push(
+        `Citation is not from a currently effective policy: ${citation.documentName}`,
+      );
+    }
+  }
+
+  return { faithful: issues.length === 0, issues };
+}
+
 export function auditAnswerFaithfulness(
   answer: string,
   citations: Citation[],
@@ -79,7 +113,8 @@ export function auditAnswerFaithfulness(
   mode: "extractive" | "llm",
 ): FaithfulnessReport {
   const quoteAudit = auditCitationQuotes(citations, documents);
-  const issues = [...quoteAudit.issues];
+  const currencyAudit = auditCitationCurrency(citations, documents);
+  const issues = [...quoteAudit.issues, ...currencyAudit.issues];
 
   if (mode === "llm") {
     const numeric = auditNumericGrounding(answer, citations);

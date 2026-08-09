@@ -12,7 +12,7 @@ test.describe("CiteGuard", () => {
     page,
   }) => {
     await page.goto("/");
-    await expect(page.getByText("CiteGuard")).toBeVisible();
+    await expect(page.locator(".brand-mark")).toContainText("CiteGuard");
 
     await page.getByTestId("question-input").fill(
       "How many days of paid annual leave do employees receive?",
@@ -98,31 +98,54 @@ test.describe("CiteGuard", () => {
     );
   });
 
-  test("uploads a document and can ask about it", async ({ page }) => {
+  test("cites current policy and notes superseded version", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByTestId("upload-name").fill("travel-policy.txt");
+    await page.getByTestId("upload-name").fill("leave-policy-2020.md");
+    await page.getByTestId("upload-effective-date").fill("2020-01-01");
+    await page.getByTestId("upload-version").fill("2020");
+    await page.getByTestId("upload-policy-family").fill("leave-policy");
     await page
       .getByTestId("upload-content")
       .fill(
-        "International flights require economy class booking. Business class is allowed only for flights longer than 8 hours with VP approval.",
+        "Employees receive 12 days of paid annual leave each calendar year.",
       );
     await page.getByTestId("upload-button").click();
-
     await expect(page.getByTestId("document-list")).toContainText(
-      "travel-policy.txt",
+      "leave-policy-2020.md",
+    );
+
+    await page.getByTestId("upload-name").fill("leave-policy-2024.md");
+    await page.getByTestId("upload-effective-date").fill("2024-06-01");
+    await page.getByTestId("upload-version").fill("2024");
+    await page.getByTestId("upload-policy-family").fill("leave-policy");
+    await page
+      .getByTestId("upload-content")
+      .fill(
+        "Employees receive 22 days of paid annual leave each calendar year.",
+      );
+    await page.getByTestId("upload-button").click();
+    await expect(page.getByTestId("document-list")).toContainText(
+      "leave-policy-2024.md",
     );
 
     await page
       .getByTestId("question-input")
-      .fill("When is business class allowed for flights?");
+      .fill("How many days of paid annual leave do employees receive?");
     await page.getByTestId("ask-button").click();
 
-    await expect(page.getByTestId("answer-text")).toContainText(/8 hours/i, {
+    await expect(page.getByTestId("answer-text")).toContainText(/22/i, {
       timeout: 15_000,
     });
+    await expect(page.getByTestId("answer-text")).toContainText(/superseded/i);
+    await expect(page.getByTestId("superseded-banner")).toContainText(
+      /leave-policy-2020/i,
+    );
     await expect(page.getByTestId("citations")).toContainText(
-      "travel-policy.txt",
+      "leave-policy-2024.md",
+    );
+    await expect(page.getByTestId("citations")).not.toContainText(
+      "leave-policy-2020.md",
     );
   });
 });

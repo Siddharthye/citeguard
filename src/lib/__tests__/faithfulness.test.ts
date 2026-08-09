@@ -13,6 +13,8 @@ const doc: DocumentRecord = {
   content:
     "Employees receive 18 days of paid annual leave each calendar year.",
   uploadedAt: new Date().toISOString(),
+  effectiveDate: "2024-01-01",
+  policyFamily: "policy",
 };
 
 const citation: Citation = {

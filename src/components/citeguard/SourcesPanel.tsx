@@ -5,8 +5,14 @@ type SourcesPanelProps = {
   busy: boolean;
   uploadName: string;
   uploadContent: string;
+  uploadEffectiveDate: string;
+  uploadVersion: string;
+  uploadPolicyFamily: string;
   onUploadNameChange: (value: string) => void;
   onUploadContentChange: (value: string) => void;
+  onUploadEffectiveDateChange: (value: string) => void;
+  onUploadVersionChange: (value: string) => void;
+  onUploadPolicyFamilyChange: (value: string) => void;
   onFile: (file: File | null) => void;
   onSubmit: (event: React.FormEvent) => void;
 };
@@ -16,8 +22,14 @@ export function SourcesPanel({
   busy,
   uploadName,
   uploadContent,
+  uploadEffectiveDate,
+  uploadVersion,
+  uploadPolicyFamily,
   onUploadNameChange,
   onUploadContentChange,
+  onUploadEffectiveDateChange,
+  onUploadVersionChange,
+  onUploadPolicyFamilyChange,
   onFile,
   onSubmit,
 }: SourcesPanelProps) {
@@ -42,7 +54,8 @@ export function SourcesPanel({
           <code className="rounded-md bg-black/[0.04] px-1.5 py-0.5 text-[var(--teal)]">
             .pdf
           </code>
-          .
+          . Set an <strong>effective date</strong> and matching{" "}
+          <strong>policy family</strong> so CiteGuard can supersede old versions.
         </p>
       </div>
       <input
@@ -60,6 +73,40 @@ export function SourcesPanel({
         className="field px-3.5 py-3 placeholder:text-[var(--ink-faint)]"
         autoComplete="off"
       />
+      <div className="grid gap-3 sm:grid-cols-3">
+        <label className="space-y-1.5 text-xs text-[var(--ink-muted)]">
+          Effective date
+          <input
+            data-testid="upload-effective-date"
+            type="date"
+            value={uploadEffectiveDate}
+            onChange={(event) => onUploadEffectiveDateChange(event.target.value)}
+            className="field px-3 py-2.5 text-sm"
+          />
+        </label>
+        <label className="space-y-1.5 text-xs text-[var(--ink-muted)]">
+          Version
+          <input
+            data-testid="upload-version"
+            value={uploadVersion}
+            onChange={(event) => onUploadVersionChange(event.target.value)}
+            placeholder="e.g. 2024"
+            className="field px-3 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
+            autoComplete="off"
+          />
+        </label>
+        <label className="space-y-1.5 text-xs text-[var(--ink-muted)]">
+          Policy family
+          <input
+            data-testid="upload-policy-family"
+            value={uploadPolicyFamily}
+            onChange={(event) => onUploadPolicyFamilyChange(event.target.value)}
+            placeholder="e.g. leave-policy"
+            className="field px-3 py-2.5 text-sm placeholder:text-[var(--ink-faint)]"
+            autoComplete="off"
+          />
+        </label>
+      </div>
       <textarea
         data-testid="upload-content"
         value={uploadContent}
@@ -82,12 +129,19 @@ export function SourcesPanel({
         {documents.map((doc) => (
           <li
             key={doc.id}
-            className="glass-inset flex flex-col gap-1 px-3.5 py-3 text-sm text-[var(--ink-muted)] sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:py-2.5"
+            className="glass-inset flex flex-col gap-1 px-3.5 py-3 text-sm text-[var(--ink-muted)] sm:gap-1.5"
           >
-            <span className="break-safe font-medium text-[var(--ink)]">{doc.name}</span>
-            <time className="shrink-0 text-xs text-[var(--ink-faint)]">
-              {new Date(doc.uploadedAt).toLocaleString()}
-            </time>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <span className="break-safe font-medium text-[var(--ink)]">{doc.name}</span>
+              <time className="shrink-0 text-xs text-[var(--ink-faint)]">
+                uploaded {new Date(doc.uploadedAt).toLocaleString()}
+              </time>
+            </div>
+            <p className="text-xs text-[var(--ink-faint)]" data-testid="document-meta">
+              effective {doc.effectiveDate}
+              {doc.version ? ` · v${doc.version}` : ""}
+              {doc.policyFamily ? ` · family ${doc.policyFamily}` : ""}
+            </p>
           </li>
         ))}
       </ul>

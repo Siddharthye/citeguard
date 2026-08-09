@@ -29,5 +29,5 @@ This repo ships one custom agent and one custom skill for the Deploy or Die ADLC
 
 | Artifact | Runtime counterpart |
 | --- | --- |
-| Citation Auditor | `src/lib/faithfulness.ts` + veto in `src/lib/answer.ts` + unit tests |
+| Citation Auditor | `src/lib/faithfulness.ts` + currency via `policy-version.ts` + veto in `answer.ts` + unit tests |
 | Chunk and Index skill | `src/lib/chunk.ts`, `addDocument()` in `store.ts`, `extract.ts` for PDF |

@@ -15,7 +15,26 @@ export const maxDuration = 30;
 const uploadSchema = z.object({
   name: z.string().min(1).max(200),
   content: z.string().min(1).max(200_000),
+  effectiveDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  version: z.string().max(40).optional(),
+  policyFamily: z.string().max(120).optional(),
 });
+
+function listProjection() {
+  return listDocuments().map(
+    ({ id, name, uploadedAt, effectiveDate, version, policyFamily }) => ({
+      id,
+      name,
+      uploadedAt,
+      effectiveDate,
+      version,
+      policyFamily,
+    }),
+  );
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,12 +48,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ document });
   }
 
-  const documents = listDocuments().map(({ id, name, uploadedAt }) => ({
-    id,
-    name,
-    uploadedAt,
-  }));
-  return NextResponse.json({ documents });
+  return NextResponse.json({ documents: listProjection() });
 }
 
 export async function POST(request: Request) {
@@ -54,9 +68,25 @@ export async function POST(request: Request) {
         (typeof form.get("name") === "string" && form.get("name")) ||
         file.name ||
         "upload.bin";
+      const effectiveDate =
+        typeof form.get("effectiveDate") === "string"
+          ? String(form.get("effectiveDate"))
+          : undefined;
+      const version =
+        typeof form.get("version") === "string"
+          ? String(form.get("version"))
+          : undefined;
+      const policyFamily =
+        typeof form.get("policyFamily") === "string"
+          ? String(form.get("policyFamily"))
+          : undefined;
       const bytes = new Uint8Array(await file.arrayBuffer());
       const content = await extractTextFromUpload(String(name), bytes);
-      const document = addDocument(String(name), content);
+      const document = addDocument(String(name), content, undefined, {
+        effectiveDate,
+        version,
+        policyFamily,
+      });
       return NextResponse.json({ document }, { status: 201 });
     }
 
@@ -68,7 +98,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    const document = addDocument(parsed.data.name, parsed.data.content);
+    const document = addDocument(parsed.data.name, parsed.data.content, undefined, {
+      effectiveDate: parsed.data.effectiveDate,
+      version: parsed.data.version,
+      policyFamily: parsed.data.policyFamily,
+    });
     return NextResponse.json({ document }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

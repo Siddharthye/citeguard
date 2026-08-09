@@ -5,6 +5,9 @@ export type DocumentSummary = {
   id: string;
   name: string;
   uploadedAt: string;
+  effectiveDate: string;
+  version?: string;
+  policyFamily: string;
 };
 
 export type SourceView = {

@@ -47,3 +47,9 @@
 **Decision:** Extract PDF text with `unpdf` on multipart upload.
 
 **Why:** No native bindings; works in GitHub Actions. Text/markdown still supported for paste workflows.
+
+## ADR-007: Policy currency via effective dates (Day 2)
+
+**Decision:** Documents carry `effectiveDate`, optional `version`, and `policyFamily`. Within a family, the latest effective date on or before today is current; peers are superseded. Retrieval scores only current chunks; answers explicitly note superseded versions; `auditCitationCurrency` fails any citation from a superseded doc.
+
+**Why:** Faithfulness (“is the quote real?”) is not enough for compliance — citations must also be **current**. Additive module (`policy-version.ts`) without rewriting retrieve/answer boundaries.

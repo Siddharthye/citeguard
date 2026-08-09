@@ -1,20 +1,49 @@
 import { auditAnswerFaithfulness } from "./faithfulness";
+import {
+  describeSuperseded,
+  filterCurrentChunks,
+} from "./policy-version";
 import { REFUSAL_THRESHOLD, scoreChunks, toCitations } from "./retrieve";
-import type { AskResult, Chunk, Citation, DocumentRecord } from "./types";
+import type {
+  AskResult,
+  Chunk,
+  Citation,
+  DocumentRecord,
+  SupersededPolicyNote,
+} from "./types";
 
 export const REFUSAL =
   "I don't know based on the provided documents. No passage was relevant enough to cite.";
 
-function buildExtractiveAnswer(citations: Citation[]): string {
+export const SUPERSEDED_REFUSAL =
+  "I won't cite a superseded policy version. Upload or select the currently effective document, or ask again after the current version is available.";
+
+function buildExtractiveAnswer(
+  citations: Citation[],
+  superseded: SupersededPolicyNote[],
+): string {
+  let base: string;
   if (citations.length === 1) {
-    return `According to ${citations[0].documentName}: ${citations[0].quote}`;
+    base = `According to ${citations[0].documentName}: ${citations[0].quote}`;
+  } else {
+    const parts = citations.map(
+      (citation, index) =>
+        `(${index + 1}) From ${citation.documentName}: ${citation.quote}`,
+    );
+    base = `Based on the provided documents:\n\n${parts.join("\n\n")}`;
   }
 
-  const parts = citations.map(
-    (citation, index) =>
-      `(${index + 1}) From ${citation.documentName}: ${citation.quote}`,
-  );
-  return `Based on the provided documents:\n\n${parts.join("\n\n")}`;
+  if (superseded.length === 0) return base;
+
+  const notes = superseded
+    .map(
+      (item) =>
+        `- ${item.name} (effective ${item.effectiveDate}) is superseded by ` +
+        `${item.supersededByName} (effective ${item.supersededByEffectiveDate})`,
+    )
+    .join("\n");
+
+  return `${base}\n\nSuperseded versions (not used as valid citations):\n${notes}`;
 }
 
 function detectMultiSource(citations: Citation[]): boolean {
@@ -25,6 +54,8 @@ function detectMultiSource(citations: Citation[]): boolean {
 function refusedResult(
   answer: string,
   mode: AskResult["mode"],
+  superseded: SupersededPolicyNote[] = [],
+  auditIssues: string[] = [],
 ): AskResult {
   return {
     answer,
@@ -32,8 +63,9 @@ function refusedResult(
     citations: [],
     mode,
     faithful: true,
-    auditIssues: [],
+    auditIssues,
     multiSource: false,
+    superseded,
   };
 }
 
@@ -42,9 +74,20 @@ function groundedResult(
   citations: Citation[],
   mode: AskResult["mode"],
   documents: DocumentRecord[],
+  superseded: SupersededPolicyNote[],
   extraIssues: string[] = [],
 ): AskResult {
   const audit = auditAnswerFaithfulness(answer, citations, documents, mode);
+
+  if (!audit.faithful && audit.issues.some((issue) => /superseded/i.test(issue))) {
+    return refusedResult(
+      SUPERSEDED_REFUSAL,
+      mode,
+      superseded,
+      audit.issues,
+    );
+  }
+
   return {
     answer,
     refused: false,
@@ -53,6 +96,7 @@ function groundedResult(
     faithful: audit.faithful,
     auditIssues: [...extraIssues, ...audit.issues],
     multiSource: detectMultiSource(citations),
+    superseded,
   };
 }
 
@@ -77,7 +121,8 @@ async function maybeRefineWithLlm(
 Answer ONLY using the numbered evidence passages.
 Every factual claim must reference citations like [1] or [1][2].
 If the evidence is insufficient, reply exactly: ${REFUSAL}
-Do not invent policies, numbers, or procedures.`;
+Do not invent policies, numbers, or procedures.
+Never treat superseded or expired policy text as current.`;
 
   try {
     const response = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
@@ -115,11 +160,17 @@ export async function answerQuestion(
   chunks: Chunk[],
   documents: DocumentRecord[] = [],
 ): Promise<AskResult> {
-  const scored = scoreChunks(question, chunks);
+  const { chunks: currentChunks, currency } = filterCurrentChunks(
+    chunks,
+    documents,
+  );
+  const superseded = describeSuperseded(documents, currency);
+
+  const scored = scoreChunks(question, currentChunks);
   const best = scored[0]?.score ?? 0;
 
   if (best < REFUSAL_THRESHOLD) {
-    return refusedResult(REFUSAL, "extractive");
+    return refusedResult(REFUSAL, "extractive", superseded);
   }
 
   const citations = toCitations(scored, 3);
@@ -127,7 +178,7 @@ export async function answerQuestion(
 
   if (llmAnswer) {
     if (llmAnswer.includes("I don't know based on the provided documents")) {
-      return refusedResult(llmAnswer, "llm");
+      return refusedResult(llmAnswer, "llm", superseded);
     }
 
     const audit = auditAnswerFaithfulness(
@@ -138,23 +189,35 @@ export async function answerQuestion(
     );
 
     if (!audit.faithful) {
-      // Citation Auditor veto: fall back to extractive grounded answer.
       return groundedResult(
-        buildExtractiveAnswer(citations),
+        buildExtractiveAnswer(citations, superseded),
         citations,
         "extractive",
         documents,
+        superseded,
         audit.issues.map((issue) => `llm-rejected: ${issue}`),
       );
     }
 
-    return groundedResult(llmAnswer, citations, "llm", documents);
+    const withNote =
+      superseded.length > 0
+        ? `${llmAnswer}\n\nSuperseded versions (not used as valid citations):\n${superseded
+            .map(
+              (item) =>
+                `- ${item.name} (effective ${item.effectiveDate}) is superseded by ` +
+                `${item.supersededByName} (effective ${item.supersededByEffectiveDate})`,
+            )
+            .join("\n")}`
+        : llmAnswer;
+
+    return groundedResult(withNote, citations, "llm", documents, superseded);
   }
 
   return groundedResult(
-    buildExtractiveAnswer(citations),
+    buildExtractiveAnswer(citations, superseded),
     citations,
     "extractive",
     documents,
+    superseded,
   );
 }

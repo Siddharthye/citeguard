@@ -18,15 +18,18 @@ This agent is **executable** in production code:
 | Concern | Module |
 | --- | --- |
 | Quote ⊆ source document | `src/lib/faithfulness.ts` → `auditCitationQuotes` |
+| Citation is currently effective | `auditCitationCurrency` + `src/lib/policy-version.ts` |
 | LLM numbers ⊆ citations | `auditNumericGrounding` |
-| Wire into ask path | `src/lib/answer.ts` (LLM veto → extractive fallback) |
-| Automated proof | `src/lib/__tests__/faithfulness.test.ts` |
+| Wire into ask path | `src/lib/answer.ts` (filter current chunks; LLM veto → extractive fallback) |
+| Automated proof | `src/lib/__tests__/faithfulness.test.ts`, `retrieve.test.ts`, e2e supersession |
 
 When reviewing a PR, confirm those tests still pass: `npm run test:unit`.
 
 ## Checklist
 
 - [ ] Top citations actually contain the facts stated in the answer.
+- [ ] Citations come from the **currently effective** policy version when revisions share a family.
+- [ ] Superseded versions are named in the answer / banner, not silently ignored.
 - [ ] Out-of-scope questions return the standard refusal and `citations: []`.
 - [ ] Audit log records question, refusal flag, and citation count.
 - [ ] LLM mode (if enabled) is still constrained to numbered evidence.

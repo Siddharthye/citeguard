@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import { chunkText } from "./chunk";
+import { derivePolicyFamily, parseEffectiveDate } from "./policy-version";
 import { SAMPLE_DOC_ID, SAMPLE_POLICY } from "./sample-policy";
 import type { AuditEntry, Chunk, DocumentRecord } from "./types";
 
@@ -15,6 +16,12 @@ type StoreShape = {
 type PersistedStore = {
   documents: DocumentRecord[];
   audit: AuditEntry[];
+};
+
+export type DocumentMetaInput = {
+  effectiveDate?: string;
+  version?: string;
+  policyFamily?: string;
 };
 
 const globalForStore = globalThis as typeof globalThis & {
@@ -33,6 +40,18 @@ function createStore(): StoreShape {
     chunks: [],
     audit: [],
     seeded: false,
+  };
+}
+
+function normalizeDocument(raw: DocumentRecord): DocumentRecord {
+  const uploadedAt = raw.uploadedAt || new Date().toISOString();
+  return {
+    ...raw,
+    uploadedAt,
+    effectiveDate: parseEffectiveDate(raw.effectiveDate, uploadedAt),
+    version: raw.version,
+    policyFamily:
+      raw.policyFamily || derivePolicyFamily(raw.name, raw.policyFamily),
   };
 }
 
@@ -66,7 +85,8 @@ function loadFromDisk(): StoreShape | null {
     const parsed = JSON.parse(raw) as PersistedStore;
     const store = createStore();
     for (const document of parsed.documents ?? []) {
-      store.documents.set(document.id, document);
+      const normalized = normalizeDocument(document as DocumentRecord);
+      store.documents.set(normalized.id, normalized);
     }
     store.chunks = rebuildChunks(store.documents.values());
     store.audit = parsed.audit ?? [];
@@ -105,20 +125,29 @@ export function ensureSampleDocument(): DocumentRecord {
     return existingByName;
   }
 
-  return addDocument("acme-workplace-policy.md", SAMPLE_POLICY, SAMPLE_DOC_ID);
+  return addDocument("acme-workplace-policy.md", SAMPLE_POLICY, SAMPLE_DOC_ID, {
+    effectiveDate: "2024-01-01",
+    version: "2024",
+    policyFamily: "acme-workplace-policy",
+  });
 }
 
 export function addDocument(
   name: string,
   content: string,
   id: string = randomUUID(),
+  meta: DocumentMetaInput = {},
 ): DocumentRecord {
   const store = getStore();
+  const uploadedAt = new Date().toISOString();
   const document: DocumentRecord = {
     id,
     name,
     content,
-    uploadedAt: new Date().toISOString(),
+    uploadedAt,
+    effectiveDate: parseEffectiveDate(meta.effectiveDate, uploadedAt),
+    version: meta.version?.trim() || undefined,
+    policyFamily: derivePolicyFamily(name, meta.policyFamily),
   };
 
   store.documents.set(id, document);

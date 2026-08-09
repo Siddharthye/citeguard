@@ -30,10 +30,10 @@ Browser (CiteGuard UI)
 
 ## Data model
 
-- **Document**: `{ id, name, content, uploadedAt }`
+- **Document**: `{ id, name, content, uploadedAt, effectiveDate, version?, policyFamily }`
 - **Chunk**: `{ id, documentId, documentName, index, text }` — overlapping windows (~500 chars)
 - **Citation**: `{ documentId, documentName, chunkId, chunkIndex, quote, score }`
-- **AskResult**: `{ answer, refused, citations[], mode: extractive | llm }`
+- **AskResult**: `{ answer, refused, citations[], mode, faithful, auditIssues, multiSource, superseded[] }`
 - **AuditEntry**: `{ id, question, answer, refused, citationCount, createdAt }`
 
 Storage uses an in-process singleton (`src/lib/store.ts`) backed by best-effort persistence to `.data/store.json` so local demos survive restarts. A sample Acme workplace policy is seeded on first access so the app is immediately demoable. Audit history can be exported via `GET /api/audit?format=csv`.
@@ -41,12 +41,14 @@ Storage uses an in-process singleton (`src/lib/store.ts`) backed by best-effort 
 ## Answer path
 
 1. Tokenize the question (stopword-aware).
-2. Score every chunk by query-term coverage + TF weight.
-3. If best score `< 0.18`, or fewer than 2 query terms overlap (when the question has ≥2 tokens), refuse with a fixed “I don’t know…” message and zero citations.
-4. Otherwise take top citations and:
+2. Resolve **policy currency** per `policyFamily` (latest `effectiveDate` ≤ today is current).
+3. Score only chunks from **currently effective** documents.
+4. If best score `< 0.18`, or fewer than 2 query terms overlap (when the question has ≥2 tokens), refuse with a fixed “I don’t know…” message and zero citations.
+5. Otherwise take top citations and:
    - **Extractive mode (default):** compose the answer from cited quotes (CI-safe, no API key).
    - **LLM mode (optional):** if `LLM_API_KEY` + `LLM_BASE_URL` are set, ask the model to answer *only* from numbered evidence passages.
-5. **Citation Auditor (runtime):** `faithfulness.ts` verifies quotes ⊆ documents and rejects uncited LLM numbers (falls back to extractive).
+6. Append an explicit note when superseded versions of the same family exist.
+7. **Citation Auditor (runtime):** `faithfulness.ts` verifies quotes ⊆ documents, rejects uncited LLM numbers, and **rejects citations from superseded policies** (falls back / refuses).
 
 ## Extensibility (Day 2 ready)
 
@@ -54,6 +56,7 @@ See `DAY2_PLAYBOOK.md` and `DECISIONS.md`. Designed so surprise requirements lan
 
 - New document types → `extract.ts` parsers feeding `addDocument`
 - Stricter citation rules → `faithfulness.ts` / refusal threshold
+- **Superseded policies (shipped Day 2)** → `policy-version.ts` + currency auditor
 - Export / compliance report → audit log + CSV (extendable)
 - Auth / multi-tenant → wrap store behind an interface (isolated in `store.ts`)
 
@@ -61,7 +64,8 @@ See `DAY2_PLAYBOOK.md` and `DECISIONS.md`. Designed so surprise requirements lan
 
 - `src/lib/chunk.ts` — tokenization + chunking
 - `src/lib/retrieve.ts` — scoring + refusal threshold
-- `src/lib/faithfulness.ts` — executable Citation Auditor
+- `src/lib/policy-version.ts` — effective dates, family, supersession
+- `src/lib/faithfulness.ts` — executable Citation Auditor (faithfulness + currency)
 - `src/lib/extract.ts` — txt/md/pdf text extraction
 - `src/lib/answer.ts` — extractive / LLM answering + auditor veto
 - `src/lib/store.ts` — documents, chunks, audit

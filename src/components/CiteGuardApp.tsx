@@ -40,6 +40,11 @@ export function CiteGuardApp({
   const [error, setError] = useState<string | null>(null);
   const [uploadName, setUploadName] = useState("");
   const [uploadContent, setUploadContent] = useState("");
+  const [uploadEffectiveDate, setUploadEffectiveDate] = useState(
+    () => new Date().toISOString().slice(0, 10),
+  );
+  const [uploadVersion, setUploadVersion] = useState("");
+  const [uploadPolicyFamily, setUploadPolicyFamily] = useState("");
   const [sourceView, setSourceView] = useState<SourceView | null>(null);
 
   const refresh = useCallback(async () => {
@@ -144,6 +149,9 @@ export function CiteGuardApp({
         body: JSON.stringify({
           name: uploadName || "uploaded-policy.txt",
           content: uploadContent,
+          effectiveDate: uploadEffectiveDate || undefined,
+          version: uploadVersion || undefined,
+          policyFamily: uploadPolicyFamily || undefined,
         }),
       });
       const data = await response.json();
@@ -152,6 +160,8 @@ export function CiteGuardApp({
       }
       setUploadName("");
       setUploadContent("");
+      setUploadVersion("");
+      setUploadPolicyFamily("");
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
@@ -171,6 +181,9 @@ export function CiteGuardApp({
         const form = new FormData();
         form.set("file", file);
         form.set("name", file.name);
+        if (uploadEffectiveDate) form.set("effectiveDate", uploadEffectiveDate);
+        if (uploadVersion) form.set("version", uploadVersion);
+        if (uploadPolicyFamily) form.set("policyFamily", uploadPolicyFamily);
         const response = await fetch("/api/documents", {
           method: "POST",
           body: form,
@@ -180,6 +193,8 @@ export function CiteGuardApp({
           throw new Error(data.error ?? "PDF upload failed");
         }
         setUploadContent("");
+        setUploadVersion("");
+        setUploadPolicyFamily("");
         await refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : "PDF upload failed");
@@ -239,8 +254,14 @@ export function CiteGuardApp({
           busy={busy}
           uploadName={uploadName}
           uploadContent={uploadContent}
+          uploadEffectiveDate={uploadEffectiveDate}
+          uploadVersion={uploadVersion}
+          uploadPolicyFamily={uploadPolicyFamily}
           onUploadNameChange={setUploadName}
           onUploadContentChange={setUploadContent}
+          onUploadEffectiveDateChange={setUploadEffectiveDate}
+          onUploadVersionChange={setUploadVersion}
+          onUploadPolicyFamilyChange={setUploadPolicyFamily}
           onFile={(file) => void onFile(file)}
           onSubmit={(event) => void onUpload(event)}
         />

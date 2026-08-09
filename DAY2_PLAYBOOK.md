@@ -12,6 +12,7 @@ Finalists get a surprise requirement. Use this map — add, don’t rewrite.
 | Confidence scores | attach `bestScore` on `AskResult`, show in UI | unit assert |
 | Simple auth | middleware wrapper; store already isolated | smoke e2e login skip |
 | Multi-doc conflict | strengthen `multiSource` + UI banner | adversarial test |
+| **Superseded policies (Day 2)** | `policy-version.ts`, `faithfulness.ts` currency audit, upload meta, answer note | unit + Playwright |
 | Compare two policies | new `/api/compare` using same chunks | new e2e |
 | Streaming answers | SSE over extractive path first | keep refusal sync |
 
@@ -35,3 +36,8 @@ Finalists get a surprise requirement. Use this map — add, don’t rewrite.
 - We designed for change: retrieval → audit → answer are separate modules
 - Citation Auditor is executable in CI, not just a prompt file
 - Day 2 feature lands as a new adapter, not a rewrite
+
+## Day 2 shipped (superseded policies)
+
+- Added `effectiveDate`, `version`, and `policyFamily` on documents; latest effective date wins per family.
+- Retrieval only scores **current** chunks; answers note superseded peers; `auditCitationCurrency` rejects expired citations.

@@ -26,6 +26,27 @@ export function AnswerPanel({ result, onOpenCitation }: AnswerPanelProps) {
             {result.answer}
           </p>
 
+          {result.superseded.length > 0 && (
+            <div
+              data-testid="superseded-banner"
+              className="rounded-[var(--radius-sm)] border border-[var(--ink)]/15 bg-black/[0.03] px-3 py-3 text-sm text-[var(--ink)] sm:px-3.5"
+              role="status"
+            >
+              <p className="font-semibold text-[var(--ink)]">
+                Superseded policy excluded
+              </p>
+              <ul className="mt-1 space-y-1 break-safe text-[var(--ink-muted)]">
+                {result.superseded.map((item) => (
+                  <li key={`${item.name}-${item.effectiveDate}`}>
+                    {item.name} (effective {item.effectiveDate}) is superseded by{" "}
+                    {item.supersededByName} (effective{" "}
+                    {item.supersededByEffectiveDate}).
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {result.multiSource && !result.refused && (
             <div
               data-testid="conflict-banner"

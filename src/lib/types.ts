@@ -3,6 +3,19 @@ export type DocumentRecord = {
   name: string;
   content: string;
   uploadedAt: string;
+  /** ISO date YYYY-MM-DD — when this policy version became effective */
+  effectiveDate: string;
+  /** Optional human version label (e.g. "2020", "v3") */
+  version?: string;
+  /** Groups revisions of the same policy for supersession */
+  policyFamily: string;
+};
+
+export type SupersededPolicyNote = {
+  name: string;
+  effectiveDate: string;
+  supersededByName: string;
+  supersededByEffectiveDate: string;
 };
 
 export type Chunk = {
@@ -32,6 +45,8 @@ export type AskResult = {
   auditIssues: string[];
   /** True when citations span more than one document */
   multiSource: boolean;
+  /** Expired/superseded peers in the same policy family (informational) */
+  superseded: SupersededPolicyNote[];
 };
 
 export type AuditEntry = {
