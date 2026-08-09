@@ -17,7 +17,7 @@ Ask questions against uploaded policies. Get answers only when the documents sup
 
 **Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.4.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0)  
 **Demo video:** [`demos/citeguard-demo.mp4`](demos/citeguard-demo.mp4) · **Paste card:** [`SUBMISSION.md`](SUBMISSION.md)  
-**Panel:** [`specs/CiteGuard-Panel-Day2-v2.pptx`](specs/CiteGuard-Panel-Day2-v2.pptx) · **Q&A PDF:** [`specs/CiteGuard-Panel-QA-v2.pdf`](specs/CiteGuard-Panel-QA-v2.pdf) · **Simple walk:** [`specs/CiteGuard-Simple-Walkthrough-v2.pdf`](specs/CiteGuard-Simple-Walkthrough-v2.pdf)
+**Panel:** [`specs/CiteGuard-Panel-Day2-v3.pptx`](specs/CiteGuard-Panel-Day2-v3.pptx) · **Q&A PDF:** [`specs/CiteGuard-Panel-QA-v2.pdf`](specs/CiteGuard-Panel-QA-v2.pdf) · **Simple walk:** [`specs/CiteGuard-Simple-Walkthrough-v2.pdf`](specs/CiteGuard-Simple-Walkthrough-v2.pdf)
 
 ## Clone → run in ~60 seconds
 

@@ -10,6 +10,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # CiteGuard Constitution
 
+**How to read the code first:** [`CODEMAP.md`](./CODEMAP.md)
+
 ## Product
 
 CiteGuard answers policy questions **only** from uploaded source documents and always attaches citations — or refuses.
@@ -21,7 +23,7 @@ Spec Kit constitution (canonical ADLC copy): `.specify/memory/constitution.md`
 1. Do not invent policy content. Prefer refusal over speculation.
 2. Keep retrieval + refusal logic testable without an LLM API key.
 3. Never commit secrets (`.env`, API keys). Use `.env.example` only.
-4. Prefer small commits; keep `ARCHITECTURE.md` and tests in sync with behavior changes.
+4. Prefer small commits; keep `ARCHITECTURE.md`, `CODEMAP.md`, and tests in sync with behavior changes.
 5. Before claiming done: `npm run lint`, `npm run test:unit`, `npm run build`.
 6. For answer-path changes, consult `agents/citation-auditor.md`.
 7. For ingestion/chunking changes, follow `skills/chunk-and-index/SKILL.md`.
@@ -30,6 +32,7 @@ Spec Kit constitution (canonical ADLC copy): `.specify/memory/constitution.md`
 ## Stack boundaries
 
 - App code lives under `src/`.
+- Core ask path: `answer.ts` → `policy-version.ts` + `retrieve.ts` + `faithfulness.ts`.
 - E2E tests live under `e2e/`.
 - CI must stay green (`.github/workflows/ci.yml`).
 

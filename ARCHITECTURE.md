@@ -1,5 +1,7 @@
 # CiteGuard Architecture
 
+**Start with the code map:** [`CODEMAP.md`](./CODEMAP.md) (ask path, modules, judge reading order).
+
 ## Purpose
 
 CiteGuard is a Track C (Knowledge & Compliance) application: users upload policy documents, ask questions, and receive answers that are grounded in source passages. If evidence is weak, the system refuses instead of inventing an answer. Every Q&A is written to an audit log.

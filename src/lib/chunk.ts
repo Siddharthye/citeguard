@@ -1,3 +1,9 @@
+/**
+ * Chunk-and-index primitives (skill: skills/chunk-and-index/SKILL.md).
+ *
+ * - tokenize: stopword-aware terms for retrieval scoring
+ * - chunkText: overlapping windows with stable `${documentId}-${index}` ids
+ */
 import type { Chunk } from "./types";
 
 const STOPWORDS = new Set([

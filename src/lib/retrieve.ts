@@ -1,5 +1,20 @@
+/**
+ * Retrieval: score policy chunks against a question, then build citations.
+ *
+ * Scoring is stopword-aware term overlap (see DECISIONS.md ADR-001).
+ * Callers must pass only *current* chunks (see policy-version.filterCurrentChunks).
+ */
 import { tokenize } from "./chunk";
 import type { Chunk, Citation } from "./types";
+
+/** Minimum best-chunk score required to answer (else refuse). Tunable. */
+export const REFUSAL_THRESHOLD = 0.18;
+
+/**
+ * At least this many query terms must hit a chunk before we treat it as
+ * evidence. Blocks weak single-token matches (e.g. "week" → "per week").
+ */
+export const MIN_OVERLAP_TERMS = 2;
 
 export type ScoredChunk = {
   chunk: Chunk;
@@ -7,12 +22,6 @@ export type ScoredChunk = {
   /** Distinct query tokens found in the chunk. */
   overlap: number;
 };
-
-/**
- * At least this many query terms must hit a chunk before we treat it as
- * evidence. Blocks weak single-token matches (e.g. "week" → "per week").
- */
-export const MIN_OVERLAP_TERMS = 2;
 
 /** Score chunks by overlapping query terms (TF-style). */
 export function scoreChunks(question: string, chunks: Chunk[]): ScoredChunk[] {
@@ -98,6 +107,3 @@ function scoredToCitation({ chunk, score }: ScoredChunk): Citation {
     score: Number(score.toFixed(4)),
   };
 }
-
-/** Minimum best-chunk score required to answer (else refuse). */
-export const REFUSAL_THRESHOLD = 0.18;

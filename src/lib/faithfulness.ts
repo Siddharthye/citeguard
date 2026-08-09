@@ -1,10 +1,12 @@
 /**
  * Citation Auditor (runtime) — executable counterpart of agents/citation-auditor.md.
  *
- * Checks:
- * 1) Every citation quote appears in its source document (faithfulness)
- * 2) Citations come from currently effective policy versions (currency)
+ * Checks (in order):
+ * 1) Every citation quote appears in its source document
+ * 2) Citations come from currently effective policy versions
  * 3) LLM answers do not introduce numbers absent from citations
+ *
+ * Wired from answer.ts via auditAnswerFaithfulness().
  */
 import type { Citation, DocumentRecord } from "./types";
 import { resolveCurrency } from "./policy-version";
@@ -23,10 +25,7 @@ function quoteCore(quote: string): string {
   return quote.replace(/\.\.\.$/, "").trim();
 }
 
-/**
- * Citation Auditor (runtime): every citation quote must appear in its source document.
- * This is the executable counterpart of agents/citation-auditor.md.
- */
+/** Every citation quote must appear in its source document. */
 export function auditCitationQuotes(
   citations: Citation[],
   documents: DocumentRecord[],
@@ -120,6 +119,7 @@ export function auditAnswerFaithfulness(
   documents: DocumentRecord[],
   mode: "extractive" | "llm",
 ): FaithfulnessReport {
+  // Combine quote + currency checks; add numeric grounding only for LLM mode.
   const quoteAudit = auditCitationQuotes(citations, documents);
   const currencyAudit = auditCitationCurrency(citations, documents);
   const issues = [...quoteAudit.issues, ...currencyAudit.issues];
