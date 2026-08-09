@@ -34,6 +34,8 @@
 **/~$*.pptx
 **/~$*.docx
 **/~$*.xlsx
+/specs/CiteGuard-Panel-Day2.pptx
+/specs/CiteGuard-Panel-Day2-dense-archive.pptx
 
 # debug
 npm-debug.log*
