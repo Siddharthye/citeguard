@@ -1,3 +1,11 @@
+/**
+ * Citation Auditor (runtime) — executable counterpart of agents/citation-auditor.md.
+ *
+ * Checks:
+ * 1) Every citation quote appears in its source document (faithfulness)
+ * 2) Citations come from currently effective policy versions (currency)
+ * 3) LLM answers do not introduce numbers absent from citations
+ */
 import type { Citation, DocumentRecord } from "./types";
 import { resolveCurrency } from "./policy-version";
 

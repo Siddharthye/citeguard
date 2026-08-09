@@ -1,11 +1,17 @@
+/**
+ * Domain types for CiteGuard.
+ * Keep API/UI DTOs thin projections of these shapes — do not fork the model.
+ */
+
+/** A stored policy document (one version). */
 export type DocumentRecord = {
   id: string;
   name: string;
   content: string;
   uploadedAt: string;
-  /** ISO date YYYY-MM-DD — when this policy version became effective */
+  /** YYYY-MM-DD — when this version became effective */
   effectiveDate: string;
-  /** Optional human version label (e.g. "2020", "v3") */
+  /** Optional label such as "2020" or "v3" */
   version?: string;
   /** Groups revisions of the same policy for supersession */
   policyFamily: string;
@@ -18,6 +24,7 @@ export type SupersededPolicyNote = {
   supersededByEffectiveDate: string;
 };
 
+/** Overlapping text window used for retrieval. */
 export type Chunk = {
   id: string;
   documentId: string;
@@ -35,17 +42,18 @@ export type Citation = {
   score: number;
 };
 
+/** User-facing result of POST /api/ask (and Day 2 demo). */
 export type AskResult = {
   answer: string;
   refused: boolean;
   citations: Citation[];
   mode: "extractive" | "llm";
-  /** Runtime Citation Auditor result */
+  /** Runtime Citation Auditor: quotes real + currently effective */
   faithful: boolean;
   auditIssues: string[];
-  /** True when citations span more than one document */
+  /** Citations span more than one document (possible conflict) */
   multiSource: boolean;
-  /** Expired/superseded peers in the same policy family (informational) */
+  /** Older peers in the same family that were excluded */
   superseded: SupersededPolicyNote[];
 };
 

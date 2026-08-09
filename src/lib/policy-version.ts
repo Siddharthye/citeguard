@@ -1,16 +1,36 @@
-import type { Chunk, DocumentRecord } from "./types";
+/**
+ * Policy currency: which document versions are still valid to cite.
+ *
+ * Same policyFamily + different effectiveDate ⇒ newest on/before today wins;
+ * older peers are superseded and must not ground answers.
+ */
+import type { Chunk, DocumentRecord, SupersededPolicyNote } from "./types";
+
+export type DatedDocument = {
+  doc: DocumentRecord;
+  /** YYYY-MM-DD used for ranking */
+  date: string;
+};
+
+export type CurrencyStatus = {
+  /** Document ids that may be cited today */
+  currentIds: Set<string>;
+  /** supersededDocId → the document that replaced it */
+  supersededBy: Map<string, DocumentRecord>;
+};
 
 /** Normalize a policy family key from an optional override or document name. */
 export function derivePolicyFamily(name: string, explicit?: string): string {
   const raw = (explicit ?? name).trim().toLowerCase();
-  const base = raw.replace(/\.[^.]+$/, "");
-  return base
+  const withoutExtension = raw.replace(/\.[^.]+$/, "");
+  return withoutExtension
     .replace(/[-_\s]?v(?:ersion)?[-_\s]?\d+$/i, "")
     .replace(/[-_\s]\d{4}([-_]\d{2}){0,2}$/i, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
+/** Prefer explicit YYYY-MM-DD; otherwise take the date portion of an ISO timestamp. */
 export function parseEffectiveDate(
   value: string | undefined,
   fallbackIso: string,
@@ -24,51 +44,65 @@ export function parseEffectiveDate(
   return new Date().toISOString().slice(0, 10);
 }
 
-export type CurrencyStatus = {
-  currentIds: Set<string>;
-  /** docId → current document that supersedes it */
-  supersededBy: Map<string, DocumentRecord>;
-};
+function withEffectiveDate(doc: DocumentRecord): DatedDocument {
+  return {
+    doc,
+    date: parseEffectiveDate(doc.effectiveDate, doc.uploadedAt),
+  };
+}
+
+/** Newest effective date first; tie-break on upload time. */
+function compareNewestFirst(a: DatedDocument, b: DatedDocument): number {
+  const byDate = b.date.localeCompare(a.date);
+  if (byDate !== 0) return byDate;
+  return b.doc.uploadedAt.localeCompare(a.doc.uploadedAt);
+}
+
+function groupByFamily(
+  documents: DocumentRecord[],
+): Map<string, DocumentRecord[]> {
+  const byFamily = new Map<string, DocumentRecord[]>();
+  for (const doc of documents) {
+    const family = doc.policyFamily || derivePolicyFamily(doc.name);
+    const members = byFamily.get(family) ?? [];
+    members.push(doc);
+    byFamily.set(family, members);
+  }
+  return byFamily;
+}
 
 /**
- * Within each policy family, the document with the latest effectiveDate
- * on or before `asOf` is current. Others in that family are superseded.
+ * Pick the current document for one policy family.
+ * Prefer the latest effectiveDate on or before `asOf`.
+ * If every version is in the future, fall back to the newest dated version.
+ */
+function pickCurrentInFamily(
+  members: DocumentRecord[],
+  asOf: string,
+): DocumentRecord | undefined {
+  const dated = members.map(withEffectiveDate);
+  const eligible = dated
+    .filter((item) => item.date <= asOf)
+    .sort(compareNewestFirst);
+
+  const pool =
+    eligible.length > 0 ? eligible : [...dated].sort(compareNewestFirst);
+
+  return pool[0]?.doc;
+}
+
+/**
+ * Within each policy family, mark one document current and the rest superseded.
  */
 export function resolveCurrency(
   documents: DocumentRecord[],
   asOf: string = new Date().toISOString().slice(0, 10),
 ): CurrencyStatus {
-  const byFamily = new Map<string, DocumentRecord[]>();
-
-  for (const doc of documents) {
-    const family = doc.policyFamily || derivePolicyFamily(doc.name);
-    const list = byFamily.get(family) ?? [];
-    list.push(doc);
-    byFamily.set(family, list);
-  }
-
   const currentIds = new Set<string>();
   const supersededBy = new Map<string, DocumentRecord>();
 
-  for (const members of byFamily.values()) {
-    const eligible = members
-      .map((doc) => ({
-        doc,
-        date: parseEffectiveDate(doc.effectiveDate, doc.uploadedAt),
-      }))
-      .filter(({ date }) => date <= asOf)
-      .sort((a, b) => b.date.localeCompare(a.date) || b.doc.uploadedAt.localeCompare(a.doc.uploadedAt));
-
-    const pool = eligible.length > 0
-      ? eligible
-      : members
-          .map((doc) => ({
-            doc,
-            date: parseEffectiveDate(doc.effectiveDate, doc.uploadedAt),
-          }))
-          .sort((a, b) => b.date.localeCompare(a.date));
-
-    const current = pool[0]?.doc;
+  for (const members of groupByFamily(documents).values()) {
+    const current = pickCurrentInFamily(members, asOf);
     if (!current) continue;
 
     currentIds.add(current.id);
@@ -89,7 +123,7 @@ export function isDocumentCurrent(
   return currency.currentIds.has(docId);
 }
 
-/** Keep only chunks from currently effective policy versions. */
+/** Drop chunks that belong to superseded / non-current documents. */
 export function filterCurrentChunks(
   chunks: Chunk[],
   documents: DocumentRecord[],
@@ -102,21 +136,12 @@ export function filterCurrentChunks(
   };
 }
 
+/** Human-readable notes for the UI / answer footer. */
 export function describeSuperseded(
   documents: DocumentRecord[],
   currency: CurrencyStatus,
-): Array<{
-  name: string;
-  effectiveDate: string;
-  supersededByName: string;
-  supersededByEffectiveDate: string;
-}> {
-  const notes: Array<{
-    name: string;
-    effectiveDate: string;
-    supersededByName: string;
-    supersededByEffectiveDate: string;
-  }> = [];
+): SupersededPolicyNote[] {
+  const notes: SupersededPolicyNote[] = [];
 
   for (const doc of documents) {
     const current = currency.supersededBy.get(doc.id);

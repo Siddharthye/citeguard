@@ -4,15 +4,18 @@
 
 Ask questions against uploaded policies. Get answers only when the documents support them — with the exact passage cited — or a clear refusal. A **runtime Citation Auditor** verifies every quote.
 
+**How to read the code:** [`CODEMAP.md`](CODEMAP.md) · **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
 ## Judge: try this (60 seconds)
 
 **Live:** https://citeguard-two.vercel.app
 
 1. Click **Paid leave days** (or ask *How many days of paid annual leave do employees receive?*) → expect **18** + citations. Open a citation → real source text.
 2. Click **Cafeteria pizza (refuse)** (or ask *What is the cafeteria pizza topping?*) → **I don't know**. No fake policy. No fake citations.
-3. Optional: upload two conflicting leave policies → conflict banner. For a guaranteed audit CSV, use local/`docker compose` (Vercel instances don’t share memory).
+3. Click **Day 2: superseded policies** → expect **22**, superseded banner, current/superseded badges.
+4. Optional: upload two conflicting leave policies → conflict banner. For a guaranteed audit CSV, use local/`docker compose` (Vercel instances don’t share memory).
 
-**Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.3.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.3.0)  
+**Repo:** https://github.com/Siddharthye/citeguard · **CI:** [Actions (green)](https://github.com/Siddharthye/citeguard/actions) · **Release:** [v0.4.0](https://github.com/Siddharthye/citeguard/releases/tag/v0.4.0)  
 **Demo video:** [`demos/citeguard-demo.mp4`](demos/citeguard-demo.mp4) · **Paste card:** [`SUBMISSION.md`](SUBMISSION.md)
 
 ## Clone → run in ~60 seconds

@@ -1,9 +1,14 @@
 "use client";
 
+/**
+ * CiteGuard shell: owns UI state and talks to the API.
+ * Panels stay presentational — keep fetch/error logic here (or in http.ts).
+ */
 import { useCallback, useState } from "react";
 import { AnswerPanel } from "./citeguard/AnswerPanel";
 import { AskForm } from "./citeguard/AskForm";
 import { AuditPanel } from "./citeguard/AuditPanel";
+import { errorMessage, networkHint, readJson } from "./citeguard/http";
 import { SourcePanel } from "./citeguard/SourcePanel";
 import { SourcesPanel } from "./citeguard/SourcesPanel";
 import type {
@@ -19,6 +24,9 @@ type CiteGuardAppProps = {
   initialAudit: AuditEntry[];
 };
 
+const LEAVE_QUESTION =
+  "How many days of paid annual leave do employees receive?";
+
 function scrollToSourcePanel() {
   requestAnimationFrame(() => {
     document.getElementById("source-panel")?.scrollIntoView({
@@ -26,6 +34,10 @@ function scrollToSourcePanel() {
       block: "center",
     });
   });
+}
+
+function todayIsoDate(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
 export function CiteGuardApp({
@@ -40,9 +52,7 @@ export function CiteGuardApp({
   const [error, setError] = useState<string | null>(null);
   const [uploadName, setUploadName] = useState("");
   const [uploadContent, setUploadContent] = useState("");
-  const [uploadEffectiveDate, setUploadEffectiveDate] = useState(
-    () => new Date().toISOString().slice(0, 10),
-  );
+  const [uploadEffectiveDate, setUploadEffectiveDate] = useState(todayIsoDate);
   const [uploadVersion, setUploadVersion] = useState("");
   const [uploadPolicyFamily, setUploadPolicyFamily] = useState("");
   const [sourceView, setSourceView] = useState<SourceView | null>(null);
@@ -55,22 +65,33 @@ export function CiteGuardApp({
     if (!docsRes.ok || !auditRes.ok) {
       throw new Error("Could not refresh documents or audit log.");
     }
-    const docsJson = await docsRes.json();
-    const auditJson = await auditRes.json();
+    const docsJson = (await readJson(docsRes)) as {
+      documents?: DocumentSummary[];
+    };
+    const auditJson = (await readJson(auditRes)) as { entries?: AuditEntry[] };
     setDocuments(docsJson.documents ?? []);
     setAudit(auditJson.entries ?? []);
   }, []);
 
+  function resetUploadFields() {
+    setUploadName("");
+    setUploadContent("");
+    setUploadVersion("");
+    setUploadPolicyFamily("");
+  }
+
   async function openCitation(citation: Citation) {
-    // Prefer live document body; fall back to the citation quote if the
-    // serverless instance does not share uploaded-doc memory.
+    // Prefer full document body; fall back to quote if another serverless
+    // instance does not share uploaded-doc memory.
     try {
       const response = await fetch(
         `/api/documents?id=${encodeURIComponent(citation.documentId)}`,
         { cache: "no-store" },
       );
       if (response.ok) {
-        const data = await response.json();
+        const data = (await readJson(response)) as {
+          document: { id: string; name: string; content: string };
+        };
         setSourceView({
           id: data.document.id,
           name: data.document.name,
@@ -81,7 +102,7 @@ export function CiteGuardApp({
         return;
       }
     } catch {
-      // fall through to quote-only view
+      // use quote-only fallback below
     }
 
     setSourceView({
@@ -106,11 +127,10 @@ export function CiteGuardApp({
         body: JSON.stringify({ question }),
         cache: "no-store",
       });
-      const data = await response.json().catch(() => ({}));
+      const data = await readJson(response);
       if (!response.ok) {
         throw new Error(
-          (data as { error?: string }).error ??
-            `Ask failed (HTTP ${response.status})`,
+          errorMessage(data, `Ask failed (HTTP ${response.status})`),
         );
       }
       setResult(data as AskResult);
@@ -121,11 +141,7 @@ export function CiteGuardApp({
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Ask failed";
-      setError(
-        message === "Failed to fetch" || message.includes("NetworkError")
-          ? "Network error reaching the API. Retry once — cold starts on free hosting can drop the first request."
-          : message,
-      );
+      setError(networkHint(message));
     } finally {
       setBusy(false);
     }
@@ -133,38 +149,34 @@ export function CiteGuardApp({
 
   function onQuestionChange(value: string) {
     setQuestion(value);
-    // Drop the previous citation source view so it does not linger
-    // while the user drafts a different question.
     setSourceView(null);
   }
 
+  /** Seeds old+new leave policies and returns the answered AskResult. */
   async function onLoadDay2Demo() {
     setBusy(true);
     setError(null);
     setSourceView(null);
     setResult(null);
     try {
-      const seedRes = await fetch("/api/demo/day2-supersession", {
+      const response = await fetch("/api/demo/day2-supersession", {
         method: "POST",
         cache: "no-store",
       });
-      const seedData = await seedRes.json().catch(() => ({}));
-      if (!seedRes.ok) {
-        throw new Error(
-          (seedData as { error?: string }).error ?? "Day 2 demo seed failed",
-        );
+      const data = (await readJson(response)) as {
+        error?: string;
+        question?: string;
+        result?: AskResult;
+      };
+      if (!response.ok) {
+        throw new Error(errorMessage(data, "Day 2 demo seed failed"));
       }
-      const nextQuestion =
-        (seedData as { question?: string }).question ??
-        "How many days of paid annual leave do employees receive?";
-      setQuestion(nextQuestion);
-      if ((seedData as { result?: AskResult }).result) {
-        setResult((seedData as { result: AskResult }).result);
-      }
+      setQuestion(data.question ?? LEAVE_QUESTION);
+      if (data.result) setResult(data.result);
       try {
         await refresh();
       } catch {
-        // best-effort on serverless — answer already set from same-instance seed
+        // Answer already set from the same-instance demo response.
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Day 2 demo failed");
@@ -189,14 +201,11 @@ export function CiteGuardApp({
           policyFamily: uploadPolicyFamily || undefined,
         }),
       });
-      const data = await response.json();
+      const data = await readJson(response);
       if (!response.ok) {
-        throw new Error(data.error ?? "Upload failed");
+        throw new Error(errorMessage(data, "Upload failed"));
       }
-      setUploadName("");
-      setUploadContent("");
-      setUploadVersion("");
-      setUploadPolicyFamily("");
+      resetUploadFields();
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
@@ -210,37 +219,34 @@ export function CiteGuardApp({
     setUploadName(file.name);
     setError(null);
 
-    if (file.name.toLowerCase().endsWith(".pdf")) {
-      setBusy(true);
-      try {
-        const form = new FormData();
-        form.set("file", file);
-        form.set("name", file.name);
-        if (uploadEffectiveDate) form.set("effectiveDate", uploadEffectiveDate);
-        if (uploadVersion) form.set("version", uploadVersion);
-        if (uploadPolicyFamily) form.set("policyFamily", uploadPolicyFamily);
-        const response = await fetch("/api/documents", {
-          method: "POST",
-          body: form,
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error ?? "PDF upload failed");
-        }
-        setUploadContent("");
-        setUploadVersion("");
-        setUploadPolicyFamily("");
-        await refresh();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "PDF upload failed");
-      } finally {
-        setBusy(false);
-      }
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      setUploadContent(await file.text());
       return;
     }
 
-    const text = await file.text();
-    setUploadContent(text);
+    setBusy(true);
+    try {
+      const form = new FormData();
+      form.set("file", file);
+      form.set("name", file.name);
+      if (uploadEffectiveDate) form.set("effectiveDate", uploadEffectiveDate);
+      if (uploadVersion) form.set("version", uploadVersion);
+      if (uploadPolicyFamily) form.set("policyFamily", uploadPolicyFamily);
+
+      const response = await fetch("/api/documents", { method: "POST", body: form });
+      const data = await readJson(response);
+      if (!response.ok) {
+        throw new Error(errorMessage(data, "PDF upload failed"));
+      }
+      setUploadContent("");
+      setUploadVersion("");
+      setUploadPolicyFamily("");
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "PDF upload failed");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (

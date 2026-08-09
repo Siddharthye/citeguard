@@ -1,3 +1,7 @@
+/**
+ * Answer orchestration: currency filter → retrieve → cite/refuse → auditor.
+ * Keep this file as the single place that decides what the user sees.
+ */
 import { auditAnswerFaithfulness } from "./faithfulness";
 import {
   describeSuperseded,
@@ -28,28 +32,37 @@ function formatSupersededNotes(superseded: SupersededPolicyNote[]): string {
     .join("\n");
 }
 
+function appendSupersededFooter(
+  answer: string,
+  superseded: SupersededPolicyNote[],
+): string {
+  if (superseded.length === 0) return answer;
+  return `${answer}\n\nSuperseded versions (not used as valid citations):\n${formatSupersededNotes(superseded)}`;
+}
+
 function buildExtractiveAnswer(
   citations: Citation[],
   superseded: SupersededPolicyNote[],
 ): string {
-  let base: string;
-  if (citations.length === 1) {
-    base = `According to ${citations[0].documentName}: ${citations[0].quote}`;
-  } else {
-    const parts = citations.map(
-      (citation, index) =>
-        `(${index + 1}) From ${citation.documentName}: ${citation.quote}`,
-    );
-    base = `Based on the provided documents:\n\n${parts.join("\n\n")}`;
-  }
+  const base =
+    citations.length === 1
+      ? `According to ${citations[0].documentName}: ${citations[0].quote}`
+      : `Based on the provided documents:\n\n${citations
+          .map(
+            (citation, index) =>
+              `(${index + 1}) From ${citation.documentName}: ${citation.quote}`,
+          )
+          .join("\n\n")}`;
 
-  if (superseded.length === 0) return base;
-  return `${base}\n\nSuperseded versions (not used as valid citations):\n${formatSupersededNotes(superseded)}`;
+  return appendSupersededFooter(base, superseded);
 }
 
 function detectMultiSource(citations: Citation[]): boolean {
-  const ids = new Set(citations.map((citation) => citation.documentId));
-  return ids.size > 1;
+  return new Set(citations.map((citation) => citation.documentId)).size > 1;
+}
+
+function hasSupersededAuditIssue(issues: string[]): boolean {
+  return issues.some((issue) => /superseded/i.test(issue));
 }
 
 function refusedResult(
@@ -80,13 +93,9 @@ function groundedResult(
 ): AskResult {
   const audit = auditAnswerFaithfulness(answer, citations, documents, mode);
 
-  if (!audit.faithful && audit.issues.some((issue) => /superseded/i.test(issue))) {
-    return refusedResult(
-      SUPERSEDED_REFUSAL,
-      mode,
-      superseded,
-      audit.issues,
-    );
+  // Defense in depth: if a superseded quote slipped through retrieval, refuse.
+  if (!audit.faithful && hasSupersededAuditIssue(audit.issues)) {
+    return refusedResult(SUPERSEDED_REFUSAL, mode, superseded, audit.issues);
   }
 
   return {
@@ -101,6 +110,7 @@ function groundedResult(
   };
 }
 
+/** Optional LLM refine — disabled unless LLM_* env vars are set (CI stays extractive). */
 async function maybeRefineWithLlm(
   question: string,
   citations: Citation[],
@@ -149,8 +159,7 @@ Never treat superseded or expired policy text as current.`;
     const data = (await response.json()) as {
       choices?: Array<{ message?: { content?: string } }>;
     };
-    const content = data.choices?.[0]?.message?.content?.trim();
-    return content || null;
+    return data.choices?.[0]?.message?.content?.trim() || null;
   } catch {
     return null;
   }
@@ -161,22 +170,24 @@ export async function answerQuestion(
   chunks: Chunk[],
   documents: DocumentRecord[] = [],
 ): Promise<AskResult> {
+  // 1) Currency: only currently effective policy versions are eligible evidence.
   const { chunks: currentChunks, currency } = filterCurrentChunks(
     chunks,
     documents,
   );
   const superseded = describeSuperseded(documents, currency);
 
+  // 2) Retrieve against current chunks only.
   const scored = scoreChunks(question, currentChunks);
-  const best = scored[0]?.score ?? 0;
-
-  if (best < REFUSAL_THRESHOLD) {
+  const bestScore = scored[0]?.score ?? 0;
+  if (bestScore < REFUSAL_THRESHOLD) {
     return refusedResult(REFUSAL, "extractive", superseded);
   }
 
   const citations = toCitations(scored, 3);
-  const llmAnswer = await maybeRefineWithLlm(question, citations);
 
+  // 3) Optional LLM refine; auditor may veto and fall back to extractive quotes.
+  const llmAnswer = await maybeRefineWithLlm(question, citations);
   if (llmAnswer) {
     if (llmAnswer.includes("I don't know based on the provided documents")) {
       return refusedResult(llmAnswer, "llm", superseded);
@@ -200,14 +211,16 @@ export async function answerQuestion(
       );
     }
 
-    const withNote =
-      superseded.length > 0
-        ? `${llmAnswer}\n\nSuperseded versions (not used as valid citations):\n${formatSupersededNotes(superseded)}`
-        : llmAnswer;
-
-    return groundedResult(withNote, citations, "llm", documents, superseded);
+    return groundedResult(
+      appendSupersededFooter(llmAnswer, superseded),
+      citations,
+      "llm",
+      documents,
+      superseded,
+    );
   }
 
+  // 4) Default: extractive grounded answer + explicit superseded notes.
   return groundedResult(
     buildExtractiveAnswer(citations, superseded),
     citations,

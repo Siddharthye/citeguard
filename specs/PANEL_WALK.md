@@ -11,10 +11,11 @@
    - Banner: superseded `leave-policy-2020.md`  
    - Sources list shows **current** / **superseded** badges  
 
-## Repo walk (2 minutes)
+## Panel walk (2 minutes)
 
 | Say | Open |
 | --- | --- |
+| How to read the code | `CODEMAP.md` |
 | Constitution | `AGENTS.md` |
 | Custom agent + skill | `AGENTS_AND_SKILLS.md` |
 | Day 2 decision | `DECISIONS.md` → ADR-007 |
